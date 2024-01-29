@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{fragments/layout}">
+
+<head>
+	<title>RM Mitoha Bandung</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+
+		<!-- Modal -->
+		<div class="modal fade modalRM" id="modalCenter" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalCenterTitle">Modal title</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+						</button>
+					</div>
+					<div class="modal-body">
+						...
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Modal -->
+
+		<style>
+			.sort {
+				background-color: darkblue;
+				color: ghostwhite;
+			}
+
+			.size {
+				background-color: darkblue;
+				color: ghostwhite;
+			}
+		</style>
+
+		<div class="card">
+			<div class="card-header">
+				<div class="card-title">
+					<h3 style="text-align:center">Rumah Makan Mitoha Bandung</h3>
+				</div>
+
+				<div>
+					<center>
+						<img src="/img/rm.png" style="width:400px;">
+					</center>
+				</div>
+
+				<div class="flex-grow-1 row">
+					<div class="col-12 col-md-4 col-sm-4 mb-sm-0 mb-2">
+						<div class="col-12">
+							<span class="input-group input-group-merge mb-3">
+								<span class="input-group-text" id="basic-addon-search31"><i
+										class="bx bx-search"></i></span>
+								<!--icon pencarian-->
+								<input type="text" id="searchMenu" class="form-control" oninput="getMenu(this.value)"
+									placeholder="Cari berdasarkan menu..." aria-label="Search..."
+									aria-describedby="basic-addon-search31">
+
+							</span>
+							<span class="ms-3 mt-3">
+								<select id="sortMenu" class="sort" onchange="sortMenu(this.value)">
+									<!--sorting-->
+									<option value="ASC">A-Z</option>
+									<option value="DESC">Z-A</option>
+								</select>
+							</span>
+							<span class="ms-3 mt-3">
+								<select id="dataSize" class="size" onchange="dataSize(this.value)">
+									<option value="5">5</option>
+									<option value="10">10</option>
+									<option value="15">15</option>
+								</select>
+							</span>
+
+
+							<br>
+						</div>
+					</div>
+					<div class="col-1 col-md-8 col-sm-8 text-end">
+						<button onclick="openModal()" class="btn btn-dark">Tambah</button>
+					</div>
+
+					<br>
+					<br>
+
+
+				</div>
+
+
+			</div>
+
+			<div id="isilistView"></div>
+
+			<script>
+				$(
+					function () {
+						console.log("refresh")
+						getAllRM(0, 5)
+
+					}
+				)
+
+				function getAllRM(currentPages, size) {
+					var keyword = ""
+					var sortType = $("#sortMenu").val()
+
+					$.ajax({
+						url: '/api/rm/paging?currentPage= ' + currentPages + '&size=' + size + '&keyword=' + keyword + '&sortType=' + sortType,
+						type: 'get',
+						contentType: 'application/json',
+						success: function (response) {
+							listView(response, size, keyword, sortType)
+
+						},
+						error: function (xhr, status, error) {
+							console.error('AJAX request failed. Status: ' + status + ', Error: ' + error);
+						}
+					})
+
+				}
+
+				function listView(response, size, keyword, sortType) {
+					var str = '<table class="table table-striped table-dark" border="2">'
+					str += '<thead class="thead-dark">'
+					str += '<tr>'
+					str += '<th class="col-1 text-center text-white" >NO</th>'
+					str += '<th class="col-3 text-center" >MENU</th>'
+					str += '<th class="col-2 text-center" >Harga</th>'
+					str += '<th class="col-2 text-center" >Pembeli</th>'
+					str += '<th class="col-4 text-center" >ACTION</th>'
+					str += '</tr>'
+					str += '</thead>'
+					str += '<tbody>'
+					if (response.dataRM.length == 0) {
+						str += '<tr>'
+						str += '<td>Data tidak ditemukan</td>'
+						str += '</tr>'
+					}
+					else {
+						for (var i = 0; i < response.dataRM.length; i++) { //5 data
+
+							console.log("response = " + response.dataRM.length + "current = " + response.pages)
+							var no = response.pages * size + (i + 1)
+							str += '<tr class="text-center border-danger">'
+							str += '<td>' + no + '</td>'
+							str += '<td>' + response.dataRM[i].mm.namaMenu + '</td>'
+							str += '<td>' + response.dataRM[i].mm.hargaMenu + '</td>'
+							str += '<td>' + response.dataRM[i].pembeli + '</td>'
+							str += '<td class="text-center">'
+							str += '<button class ="btn btn-success mx-3" value="' + response.dataRM[i].id + '" onclick="f_edit(value)">Ubah</button>'
+							str += '<button class ="btn btn-warning" value="' + response.dataRM[i].id + '" onclick="f_hapus(value)">Hapus</button>'
+							str += '</td>'
+							str += '</tr>'
+							//				str += '<td width="80%"style="text-align : right;"><button class ="btn btn-primary ;text-align : right;" value="' + response.dataRM[i].id + '" onclick="f_ubah(value)">Ubah</td>'
+							//					str += '<td style="text-align : left;"><button class ="btn btn-danger" value="' + response.dataRM[i].id + '" onclick="f_hapus(value)">Hapus</td>'
+
+
+						}
+
+
+
+					}
+
+					str += '</tbody>'
+					str += '</table>'
+
+					//INI PAGING
+					str += '<nav aria - label="Page navigation example">'
+					str += '<ul class="pagination justify-content-end">'
+					var prevMove = response.pages - 1 <= 0 ? 0 : response.pages - 1
+					str += '<li class="page-item ">'
+					str += '<a class="page-link" onclick="getAllRM(' + prevMove + ',' + size + ')">&laquo;</a>'
+					str += '</li>'
+					var index = 1;
+					for (var i = 0; i < response.total_pages; i++) {
+						str += '<li class="page-item"><a class="page-link" onclick="getAllCourier(' + i + ',' + size + ')">' + index + '</a></li>'
+						index++;
+					}
+
+					var nextMove = response.pages + 1 > response.total_pages - 1 ? response.total_pages - 1 : response.pages + 1
+					str += '<li class="page-item">'
+					str += '<a class="page-link" onclick="getAllRM(' + nextMove + ',' + size + ')">&raquo;</a>'
+					str += '</li>'
+					str += '</ul>'
+					str += '</nav >'
+
+					$('#isilistView').empty()
+					$('#isilistView').html(str)
+
+				}
+
+				function openModal() {
+					$.ajax({
+						url: '/api/menu',
+						type: 'get',
+						contentType: 'application/json',
+						success: function (dataMenu) {
+
+							var str = '<form id="form_add" action="/api/rm/add" method="post">'
+							str += '<input type="hidden" class="form-control" id="id" name="id">'
+							str += '<div class="form-group">'
+							str += '<label>Pembeli</label>'
+							str += '<input type="text" class="form-control" id="pembeli" name="pembeli">'
+							str += '</div>'
+							str += '<div class="form-group">'
+							str += '<label>Menu Makanan</label>'
+							str += '<select  id="menu" name="menu" class="form-control" onchange="menuId(this.value)">'
+							str += '<option value="">--Pilih Menu Makanan--</option>'
+							for (var i = 0; i < dataMenu.length; i++) {
+								str += '<option class="text-black" value="' + dataMenu[i].id + '">' + dataMenu[i].namaMenu + '</option>'
+							}
+							str += '</select>'
+							str += '</div>'
+							str += '<div class="form-group">'
+							str += '<label for="MenuMakanan">Harga Makanan</label>'
+							str += '<input type="text" id="hargaMakanan" name="harga" class="form-control" disabled="disabled">'
+							str += '<span id="validate_name" class="text-danger"></span>'
+							str += '</div>'
+							str += '<div class="modal-footer">'
+							str += '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnNo">Batal</button>'
+							str += '<button type="submit" class="btn btn-primary" id="btnSave">Pesan</button>'
+							str += '</div>'
+							str += '</form>'
+
+							$("#modalCenter").modal('show')
+							$(".modal-title").html("Tambah")
+							$(".modal-body").html(str)
+							$("#btnSave").html("Pesan")
+							$("#btnSave").off("click").on("click", function () {
+								jQueryValidation()
+							})
+
+							//$("#modalCenter").modal('show')
+
+
+
+						}
+					})
+
+
+
+				}
+
+
+
+				
+
+				function jQueryValidation() {
+
+					var menu = $("#menu").val().trim()
+					var pembeli = $("#pembeli").val().trim()
+					console.log(menu)
+
+
+					$("#form_add").validate({
+						errorClass: "text-danger",
+						rules: {
+							pembeli: {
+								required: true,
+								noSpace: true,
+								validInput: true
+							},
+							menu: {
+								required: true,
+								noSpace: true
+							}
+
+						},
+						messages: {
+							pembeli: {
+								required: "Nama pembeli tidak boleh kosong",
+								noSpace: "Masukkan nama pembeli dengan benar",
+								validInput: "Nama pembeli tidak boleh mengandung spesial karakter/angka"
+							},
+							menu: {
+								required: "Menu tidak boleh kosong",
+								noSpace: "Masukkan menu makanan dengan benar",
+							}
+						},
+						submitHandler: function (form) {
+							saveRM()
+						}
+
+					})
+				}
+
+				function saveRM() {
+					var formdata = '{'      //format string json, dapet dari function open modal
+					formdata += '"menuId":"' + $("#menu").val() + '",'
+					formdata += '"pembeli":"' + $("#pembeli").val() + '"'
+					formdata += '}'
+
+					var cek = $("#menu").val();
+
+
+					$.ajax({
+						url: '/api/rm/add',
+						data: formdata,
+						type: 'post',
+						contentType: 'application/json',
+						success: function () {
+							$("#modalCenter").modal('toggle')
+							getAllRM(0, 5)
+							console.log("masuk ga")
+
+						}
+
+					})
+				}
+
+				function f_edit(id) {
+
+					console.log("masuk")
+					$.ajax({
+						url: '/api/rm/' + id,
+						type: 'get',
+						contentType: 'application/json',
+						success: function (rm) {
+
+							$.ajax({
+								url: '/api/menu',
+								type: 'get',
+								contentType: 'application/json',
+								success: function (dataMenu) {
+
+									var str = '<form id="form_edit">'
+									str += '<div class="form-group">'
+									str += '<label>Pembeli</label>'
+									str += '<input type="text" class="form-control" id="pembeli" name="pembeli" value="' + rm.pembeli + '">'
+									str += '</div>'
+									str += '<div class="form-group">'
+									str += '<div class="form-group">'
+									str += '<label>Menu</label>'
+									str += '<select class="form-control" id="menu" onchange="menuId(this.value)">'
+									str += '<option>--Rubah Menu Makanan--</option>'
+									for (var i = 0; i < dataMenu.length; i++) {
+
+										if (dataMenu[i].id == rm.menuId) {
+											continue
+										}
+										else {
+											str += '<option class="text-black" value="' + dataMenu[i].id + '">' + dataMenu[i].namaMenu + '</option>'
+											console.log()
+										}
+
+									}
+
+									str += '</select>'
+									str += '</div>'
+									str += '<label>Harga</label>'
+									str += '<input type="text" id="hargaMakanan" name="harga"  class="form-control" disabled="disabled">'
+									str += '</div>'
+									str += '<div class="modal-footer">'
+									str += '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnNo">Batal</button>'
+									str += '<button type="submit" class="btn btn-primary" id="btnSave">Save changes</button>'
+									str += '</div>'
+									str += '</form>'
+
+									$(".modal-title").html("Edit Pemesanan")
+									$(".modal-body").html(str)
+									$("#btnSave").html("Simpan")
+									$("#btnNo").html("Batal")
+									//$("#btnSave").off('click').on("click", updateCategory)   //untuk tanpa parameter
+									$("#btnSave").off('click').on("click",
+										function () {
+											jQueryValidationEdit()	//mengirimkan parameter id				
+										})
+									$("#modalCenter").modal('show')
+								}
+							})
+
+						}
+					})
+
+				}
+				
+				function menuId(id) {
+				
+					$.ajax({
+						url: '/api/hargamenu/' + id,
+						type: 'get',
+						contentType: 'application/json',
+						success: function (data) {
+							console.log(data)
+
+							$('#hargaMakanan').val(data[1])
+						}
+					})
+				}
+				function jQueryValidationEdit(id) {
+
+					var menu = $("#menu").val().trim()
+					var pembeli = $("#pembeli").val().trim()
+					console.log(menu)
+					//var penampungPembeli = $("#pembeli").val()
+					//console.log(penampungMenu)
+					//	console.log(penampungPembeli)
+
+					$("#form_edit").validate({
+						errorClass: "text-danger",
+						rules: {
+							pembeli: {
+								required: true,
+								noSpace: true,
+								validInput: true
+							},
+							menu: {
+								required: true,
+								noSpace: true
+							}
+
+						},
+						messages: {
+							pembeli: {
+								required: "Nama pembeli tidak boleh kosong",
+								noSpace: "Masukkan nama pembeli dengan benar",
+								validInput: "Nama pembeli tidak boleh mengandung spesial karakter/angka"
+							},
+							menu: {
+								required: "Menu tidak boleh kosong",
+								noSpace: "Masukkan menu makanan dengan benar",
+							}
+						},
+						submitHandler: function (form) {
+							updateRM(id)
+						}
+
+					})
+				}
+
+
+				function updateRM(id) {
+					console.log("id lama" + id)
+					var formdata = '{'      //format string json, dapet dari function open modal
+					formdata += '"menuId":"' + $("#menu").val() + '",'
+					formdata += '"pembeli":"' + $("#pembeli").val() + '""'
+					formdata += '}'
+				
+					alert(formdata)
+
+					$.ajax({
+
+						url: '/api/rm/edit/' + id,
+						data: formdata,
+						type: 'put',
+						contentType: 'application/json',
+						success: function () {
+							$("#modalCenter").modal('toggle')
+							getAllRM(0, 5)
+
+						}
+					})
+				}
+
+				function f_hapus(id) {
+					$.ajax({
+						url: '/api/rm/' + id,
+						type: 'get',
+						contentType: 'application/json',
+						success: function (data) {
+							var str = '<h6>Apakah anda yakin akan menghapus pembelian ' + data.mm.namaMenu + '? </h6>'
+							str += '<div class="modal-footer">'
+							str += '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnNo">Batal</button>'
+							str += '<button type="submit" class="btn btn-primary" id="btnSave">Save changes</button>'
+							str += '</div>'
+
+							$(".modal-title").html("Hapus!")
+							$(".modal-body").html(str)
+							$("#btnSave").html("Ya")
+							$("#btnNo").html("Tidak")
+							$("#btnSave").off('click').on('click',
+								function () {
+									deleteRM(id)
+
+								})
+							$("#modalCenter").modal('show')
+						}
+					})
+				}
+
+				function deleteRM(id) {
+					$.ajax({
+						url: '/api/rm/delete/' + id,
+						type: 'put', //soft delete
+						contentType: 'application/json',
+						success: function () {
+							$("#modalCenter").modal('toggle')
+							getAllRM(1, 5)
+						}
+					})
+				}
+
+				function getMenu(keyword) {
+					var currentPage = 0
+					var size = $("#dataSize").val()
+					var sortType = $("#sortMenu").val()
+
+					//alert("cek sortType : " + sortType + " cek keyword : " + keyword + " size " + size)
+
+
+
+					$.ajax({   //format AJAX
+						//url: '/api/category',  //dari Api Categorry  untuk tanpa paging   //request param (?)
+						url: '/api/rm/paging?currentPage=' + currentPage + '&size=' + size + '&keyword=' + keyword + '&sortType=' + sortType,     //pake PAGING    
+						type: 'get',
+						contentType: 'application/json',
+						success: function (response) {
+
+							listView(response, size, keyword, sortType)
+						}
+					})
+				}
+
+
+				function sortMenu(sortType) {
+					var currentPage = 0
+					var size = $("#dataSize").val()
+					var keyword = $("#searchMenu").val()
+
+
+					$.ajax({   //format AJAX
+						//url: '/api/category',  //dari Api Categorry  untuk tanpa paging   //request param (?)
+						url: '/api/rm/paging?currentPage=' + currentPage + '&size=' + size + '&keyword=' + keyword + '&sortType=' + sortType,     //pake PAGING    
+						type: 'get',
+						contentType: 'application/json',
+						success: function (response) {
+							listView(response, size, keyword, sortType)
+							//alert("-SORT- " + "response : " + response + " currentPage : " + currentPage + " size : " + size + " keyword : " + keyword + " sortType : " + sortType)
+							console.log("-SORT- " + "response : " + response + " currentPage : " + currentPage + " size : " + size + " keyword : " + keyword + " sortType : " + sortType)
+						}
+					})
+				}
+
+				function dataSize(size) {
+					var currentPage = 0
+					//var size = $("#dataSize").val()
+					var keyword = $("#searchMenu").val()
+					var sortType = $("#sortMenu").val()
+
+
+					$.ajax({   //format AJAX
+						//url: '/api/category',  //dari Api Categorry  untuk tanpa paging   //request param (?)
+						url: '/api/rm/paging?currentPage=' + currentPage + '&size=' + size + '&keyword=' + keyword + '&sortType=' + sortType,     //pake PAGING    
+						type: 'get',
+						contentType: 'application/json',
+						success: function (response) {
+							listView(response, size, keyword, sortType)
+							//alert("-SIZE- " + "response : " + response + " currentPage : " + currentPage + " size : " + size + " keyword : " + keyword + " sortType : " + sortType)
+							console.log("-SIZE- " + "response : " + response + " currentPage : " + currentPage + " size : " + size + " keyword : " + keyword + " sortType : " + sortType)
+						}
+					})
+				}
+
+				jQuery.validator.addMethod("noSpace", function (value, element) {
+					return value == '' || value.trim().length != 0;
+				})
+
+
+				jQuery.validator.addMethod("validInput", function (value, element) {
+					return /^[a-zA-Z ]*$/.test(value);
+				})
+
+
+
+			</script>
+		</div>
+	</div>
+
+
+
+</body>
+
+</html>

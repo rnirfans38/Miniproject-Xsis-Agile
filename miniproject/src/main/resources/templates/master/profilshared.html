@@ -1,0 +1,232 @@
+<html layout:decorate="~{fragments/layout}">
+	<head>
+		<title>Profil Shared Layou</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			
+            <!-- Profile -->
+            <div class="row mt-3">
+              <div class="col-md-4">
+              
+                
+                 <div id="img_container"> 
+                  <div class="profilepic mx-auto">
+                    <img
+                    src="/sneat/assets/img/avatars/1.png"
+                    alt="user-avatar"
+                    class="profilepic__image"
+                    height="200"
+                    width="200"
+                    id="uploadedAvatar"
+                  />
+                   
+                    <div class="profilepic__content">
+                      <span class="profilepic__icon"><i class="fas fa-edit"></i></span>
+                      <span class="profilepic__text">Edit Profile</span>
+                    </div>
+                  </div>
+                 
+                
+                
+                 </div>
+                 <div class="level-user text-center mt-3">
+                  <div class="user-star">
+                    <i class='bx bxs-star bx-sm text-warning'></i>
+                  </div>
+                  <h4 class="rank-user mt-2">Bronze Member</h4>
+                  <h5>Since 2023</h5>
+                 </div>
+                 <div class="menu-profile">
+                  <ul class="menu-text d-block">
+                    <li class="menu-item mt-5 mb-2">
+                      <a href="#" class="menu-link">
+                        <div data-i18n="Error">Pasien</div>
+                      </a>
+                    </li>
+                    <li class="menu-item mb-2">
+                      <a href="#" class="menu-link">
+                        <div data-i18n="Under Maintenance">Pembelian Obat</div>
+                      </a>
+                    </li>
+                    <li class="menu-item mb-2">
+                      <a href="#" class="menu-link">
+                        <div data-i18n="Error">Rencana Kedatangan</div>
+                      </a>
+                    </li>
+                    <li class="menu-item mb-2">
+                      <a href="#" class="menu-link">
+                        <div data-i18n="Under Maintenance">Riwayat Chat Dokter</div>
+                      </a>
+                    </li>
+                  </ul>
+                 </div>                    
+                        
+              </div>
+              <div class="col-md">
+                  <div class="nav-align-top mb-4">
+                    <ul class="nav nav-pills mb-3 nav-fill" role="tablist">
+                      <li class="nav-item">
+                        <button
+                          type="button"
+                          class="nav-link active"
+                          role="tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-justified-home"
+                          aria-controls="navs-pills-justified-home"
+                          aria-selected="true"
+                        >
+                          <i class="tf-icons bx bx-user"></i> Profile
+                          
+                        </button>
+                      </li>
+                      <li class="nav-item">
+                        <button
+                          type="button"
+                          class="nav-link"
+                          role="tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-justified-profile"
+                          aria-controls="navs-pills-justified-profile"
+                          aria-selected="false"
+                        >
+                          <i class="tf-icons bx bx-home"></i> Home
+                        </button>
+                      </li>
+                      <li class="nav-item">
+                        <button
+                          type="button"
+                          class="nav-link"
+                          role="tab"
+                          data-bs-toggle="tab"
+                          data-bs-target="#navs-pills-justified-messages"
+                          aria-controls="navs-pills-justified-messages"
+                          aria-selected="false"
+                        >
+                          <i class="tf-icons bx bx-message-square"></i> Messages
+                        </button>
+                      </li>
+                    </ul>
+                    <div class="tab-content">
+                      <div class="tab-pane fade show active" id="navs-pills-justified-home" role="tabpanel">
+                        <div class="d-flex mb-3">
+                          <div class="flex-shrink-0">                           
+                          </div>
+                          <div class="flex-grow-1 row">
+                            <div class="col-8 col-sm-7 mb-sm-0 mb-2">
+                              <h4 class="mb-0">Data Pribadi</h4>
+                            </div>
+                            <div class="col-4 col-sm-5 text-end">
+                              <button type="button" class="btn btn-icon btn-outline-secondary">
+                                <i class="bx bx-edit-alt"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <form>
+                          <div class="mb-3">
+                            <label class="form-label" for="basic-default-fullname">Full Name</label>
+                            <input type="text" class="form-control" id="basic-default-fullname" placeholder="John Doe" disabled />
+                          </div>
+                          <div class="mb-3">
+                            <label class="form-label" for="basic-default-date">Date</label>
+                         
+                              <input class="form-control" type="date" value="2021-06-18" id="html5-date-input" disabled />
+                           
+                          </div>
+                          
+                          <div class="mb-3">
+                            <label class="form-label" for="basic-default-phone">Phone No</label>
+                            <input
+                              type="text"
+                              id="basic-default-phone"
+                              class="form-control phone-mask"
+                              placeholder="658 799 8941"
+                             disabled/>
+                          </div>
+                          
+                         
+                        </form>
+                        <div class="d-flex mb-3 mt-5">
+                          <div class="flex-shrink-0">                           
+                          </div>
+                          <div class="flex-grow-1 row">
+                            <div class="col-8 col-sm-7 mb-sm-0 mb-2">
+                              <h4 class="mb-0">Data Akun</h4>
+                            </div>
+                           
+                          </div>
+                        </div>
+                        <form>
+                          <div class="mb-3">
+                            <div class="d-flex mb-3">
+                              <div class="flex-shrink-0">                           
+                              </div>
+                              <div class="flex-grow-1 row">
+                                <div class="col-8 col-sm-7 mb-sm-0 mb-2">
+                                  <h6 class="mb-0">Email</h6>
+                                </div>
+                                <div class="col-4 col-sm-5 text-end">
+                                  <button type="button" class="btn btn-sm btn-icon btn-outline-secondary">
+                                    <i class="bx bx-edit-alt"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <input type="text" class="form-control" id="basic-default-fullname" placeholder="John Doe" disabled />
+                          </div>
+                          <div class="mb-3">
+                            <div class="d-flex mb-3">
+                              <div class="flex-shrink-0">                           
+                              </div>
+                              <div class="flex-grow-1 row">
+                                <div class="col-8 col-sm-7 mb-sm-0 mb-2">
+                                  <h6 class="mb-0">Password</h6>
+                                </div>
+                                <div class="col-4 col-sm-5 text-end">
+                                  <button type="button" class="btn btn-sm btn-icon btn-outline-secondary">
+                                    <i class="bx bx-edit-alt"></i>
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <input type="password" class="form-control" id="basic-default-fullname" placeholder="*******" disabled />
+                          </div>
+                          
+                          
+                        </form>
+                      </div>
+                      <div class="tab-pane fade" id="navs-pills-justified-profile" role="tabpanel">
+                        <p>
+                          Donut dragée jelly pie halvah. Danish gingerbread bonbon cookie wafer candy oat cake ice
+                          cream. Gummies halvah tootsie roll muffin biscuit icing dessert gingerbread. Pastry ice cream
+                          cheesecake fruitcake.
+                        </p>
+                        <p class="mb-0">
+                          Jelly-o jelly beans icing pastry cake cake lemon drops. Muffin muffin pie tiramisu halvah
+                          cotton candy liquorice caramels.
+                        </p>
+                      </div>
+                      <div class="tab-pane fade" id="navs-pills-justified-messages" role="tabpanel">
+                        <p>
+                          Oat cake chupa chups dragée donut toffee. Sweet cotton candy jelly beans macaroon gummies
+                          cupcake gummi bears cake chocolate.
+                        </p>
+                        <p class="mb-0">
+                          Cake chocolate bar cotton candy apple pie tootsie roll ice cream apple pie brownie cake. Sweet
+                          roll icing sesame snaps caramels danish toffee. Brownie biscuit dessert dessert. Pudding jelly
+                          jelly-o tart brownie jelly.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            
+            <!-- End Of Profile -->
+
+		</div>
+	</body>
+</html>

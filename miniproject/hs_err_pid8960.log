@@ -1,0 +1,36 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  EXCEPTION_STACK_OVERFLOW (0xc00000fd) at pc=0x00007fff9bd685a6, pid=8960, tid=3732
+#
+# JRE version: OpenJDK Runtime Environment Temurin-17.0.7+7 (17.0.7+7) (build 17.0.7+7)
+# Java VM: OpenJDK 64-Bit Server VM Temurin-17.0.7+7 (17.0.7+7, mixed mode, emulated-client, tiered, compressed oops, compressed class ptrs, g1 gc, windows-amd64)
+# Problematic frame:
+# V  [jvm.dll+0x3885a6]
+#
+# No core dump will be written. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/adoptium/adoptium-support/issues
+#
+
+---------------  S U M M A R Y ------------
+
+Command Line: -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=51808 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=localhost -Dspring.jmx.enabled=true -Dmanagement.endpoints.jmx.exposure.include=* -Dspring.application.admin.enabled=true -XX:TieredStopAtLevel=1 -Dspring.boot.project.name=miniproject -Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8 -Dstderr.encoding=UTF-8 -XX:+ShowCodeDetailsInExceptionMessages com.teama.minpro.teama.MiniprojectApplication --spring.output.ansi.enabled=always
+
+Host: AMD Ryzen 3 3200U with Radeon Vega Mobile Gfx  , 4 cores, 5G,  Windows 10 , 64 bit Build 19041 (10.0.19041.2545)
+Time: Mon Oct 16 10:35:33 2023 SE Asia Standard Time elapsed time: 1.081130 seconds (0d 0h 0m 1s)
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x0000021ac11b1bb0):  JavaThread "JMX server connection timeout 21" daemon [_thread_in_vm, id=3732, stack(0x0000005183f00000,0x0000005184000000)]
+
+Stack: [0x0000005183f00000,0x0000005184000000],  sp=0x0000005183fff850,  free space=1022k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x3885a6]
+V  [jvm.dll+0x677472]
+V  [jvm.dll+0x3891fb]
+V  [jvm.dll+0x389487]
+V  [jvm.dll+0x40eea1]
+V  [jvm.dll+0x7ea90b]
+V  [jvm.dll+0x7e4e7a]

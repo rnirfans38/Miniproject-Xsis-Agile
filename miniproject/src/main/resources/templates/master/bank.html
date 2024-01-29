@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html layout:decorate="~{fragments/layout}">
+
+<head>
+	<title>Bank BCA</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<!-- Modal -->
+		<div class="modal fade modalBank" id="modalCenter" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalCenterTitle">Modal title</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+						</button>
+					</div>
+					<div class="modal-body">
+						...
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Modal -->
+
+
+		<center>
+			<h3>Welcome, happy with drawing money ❤️</h3>
+		</center>
+
+		<div class="card bg-primary text-white mb-3"> <!--CARD KESELURUHAN-->
+			<!--CARD HEADER-->
+			<div class="card-header">
+				<div class="card-title">
+					<center>
+						<h5 class="text-black"><b>BANK CENTRAL ASIA</b></h5>
+					</center>
+				</div>
+
+				<div class="flex-grow-1 row">
+					<div class="col-12 col-md-4 col-sm-4 mb-sm-0 mb-2">
+						<div class="col-12">
+							<div class="input-group input-group-merge"> <!--UNTUK MENGGABUNGKAN-->
+								<!--ICON PENCARIAN-->
+								<span class="input-group-text" id="basic-addon-search31"><i
+										class="bx bx-search"></i></span>
+								<!--INPUT PENCARIAN-->
+								<input type="text" id="searchName" class="form-control" oninput="getName(this.value)"
+									placeholder="Cari berdasarkan nama..." aria-label="Search..."
+									aria-describedby="basic-addon-search31">
+							</div>
+						</div>
+						<br>
+					</div>
+					<div class="col-1 col-md-8 col-sm-8 text-end">
+						<button onclick="openModal()" class="btn btn-light">Tambah</button>
+					</div>
+					<div>
+						<!--SORTING-->
+						<select id="sortName" onchange="sortName(this.value)">
+							<option value="ASC">A-Z</option>
+							<option value="DESC">Z-A</option>
+							<!--SORTING-->
+						</select>
+					</div>
+					<br>
+					<div>
+						<select id="dataSize" onchange="dataSize(this.value)">
+							<option value="5">5</option>
+							<option value="10">10</option>
+							<option value="15">15</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- Modal -->
+			<div class="modal fade modalBank" id="modalCenter" tabindex="-1" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="modalCenterTitle">Modal title</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+							</button>
+						</div>
+						<div class="modal-body">
+							...
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- End Modal -->
+
+
+
+			<!--CARD HEADER-->
+			<div class="card-body">
+				<div id="isitabelView"></div>
+			</div>
+
+
+
+			<style>
+				.card-title {
+					background-color: #fff;
+					/* Warna latar belakang container */
+					padding: 10px;
+					/* Ruang polos di sekitar teks */
+					border-radius: 5px;
+					/* Mengatur sudut border container */
+
+				}
+
+				.table th {
+					text-transform: uppercase;
+					font-size: 0.75rem;
+					letter-spacing: 1px;
+					width: 25%;
+				}
+
+
+
+				/* Untuk menyembunyikan panah naik dan turun pada input type number */
+				/*input[type="number"]::-webkit-inner-spin-button,
+				input[type="number"]::-webkit-outer-spin-button {
+					-webkit-appearance: none;
+					margin: 0;
+				}*/
+			</style>
+
+			<script>
+
+				$(
+					function () {
+						console.log("refresh")
+						getAllData(0, 25)
+
+					}
+				)
+
+				function getAllData(currentPages, size) {
+					var keyword = ""
+					var sortType = $("#sortName").val()
+
+					$.ajax({
+						url: '/api/bank/paging?currentPage= ' + currentPages + '&size=' + size + '&keyword=' + keyword + '&sortType=' + sortType,
+						type: 'get',
+						contentType: 'application/json',
+						success: function (response) {
+							console.log(response)
+							tabelView(response, size, keyword, sortType)
+							alert("-Refresh- " + "response : " + response + " currentPage : " + currentPages + " size : " + size + " keyword : " + keyword + " sortType : " + sortType)
+						},
+						error: function (xhr, status, error) {
+							console.error('AJAX request failed. Status: ' + status + ', Error: ' + error);
+						}
+					})
+
+				}
+
+
+				function tabelView(response, size, keyword, sortType) {
+					var str = '<table class="table table-sm">'
+					str += '<thead class="thead-light">'
+					str += '<tr>'
+					str += '<div>'
+					str += '<th scope="col" style="color: white;">No</th>'
+					str += '</div>'
+					str += '<div>'
+					str += '<th scope="col" style="color: white; text-align: center;">Nama</th>'
+					str += '</div>'
+					str += '<div>'
+					str += '<th scope="col" style="color: white; text-align: center">KodeVA</th>'
+					str += '<th scope="col" style="color: white; text-align: right;">Action</th>'
+					str += '</div>'
+					str += '</tr>'
+					str += '</thead>'
+					str += '<tbody>'
+
+					for (var i = 0; i < response.databank.length; i++) {
+						var no = (response.pages * size) + (i + 1)
+						str += '<tr>'
+						str += '<div>'
+						str += '<td style="color:white;">' + no + '</td>'
+						str += '</div>'
+						str += '<div>'
+						str += '<td style="color:white; text-align: center;">' + response.databank[i].name + '</td>'
+						str += '</div>'
+						str += '<div>'
+						str += '<td style="color:white; text-align: center;">' + response.databank[i].vaCode + '</td>'
+						str += '</div>'
+						str += '<div>'
+						str += '<td width="50%"style="text-align : right;"><button class="btn btn-success" value="' + response.databank[i].id + '"onclick="f_ubah(value)">Ubah</td>'
+						str += '</div>'
+						str += '<td style="text-align : left;"><button class="btn btn-danger" value="' + response.databank[i].id + '"onclick="f_hapus(value)">Hapus</td>'
+						str += '</div>'
+						str += '</tr>'
+					}
+
+					str += '</tbody>'
+					str += '</table>'
+
+					console.log("response = " + response.databank.length + "current = " + response.pages + "size = " + size + "total data = " + response.total + "total_pages = " + response.total_pages)
+
+					$("#isitabelView").empty
+					$("#isitabelView").html(str)
+				}
+
+				//LANJUTKAN BOS SEMANGAT
+				function openModal() {
+					var str = '<form id="form_add" action="/api/bank/addData" method="post" enctype="application/json">'
+					str += '<input type="hidden" class="form-control" id="id" name="id">'
+					str += '<div class="form-group">'
+					str += '<label>Nama</label>'
+					str += '<input type="text" class="form-control" id="name" name="name">'
+					str += '<span id="validate_name" class="text-danger"></span>'
+					str += '<label>KodeVA</label>'
+					str += '<input type="text"class="form-control" id="va_code" name="vaCode">'
+					str += '<span id="validate_kode" class="text-danger"></span>'
+					str += '</div>'
+					str += '<div class="modal-footer">'
+					str += '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnNo">Batal</button>'
+					str += '<button type="submit" class="btn btn-primary" id="btnSave">Save Changes</button>'
+					str += '</div>'
+					str += '</form>'
+
+					$(".modal-title").html("Tambah")
+					$(".modal-body").html(str)
+					$("#btnSave").html("Simpan")
+					$("#btnSave").off("click").on("click", function () {
+						saveData()
+					})
+					$("#modalCenter").modal('show')
+
+
+				}
+
+				function saveData() {
+					var formdata = '{'
+					formdata += '"name":"' + $("#name").val().trim() + '",'
+					formdata += '"vaCode":"' + $("#va_code").val().trim() + '"'
+					formdata += '}'
+
+					//console.log(formdata + " formdata ");
+					alert(formdata);
+
+					$.ajax({
+						url: '/api/bank/addData',
+						data: formdata,
+						type: 'post',
+						contentType: 'application/json',
+						success: function () {
+							//alert("MANTAPPPP")
+							$("#modalCenter").modal('toggle')
+							getAllData(0, 5)
+						}
+					})
+				}
+
+				function f_ubah(id) {
+					$.ajax({
+						url: '/api/bank/' + id,
+						type: 'get',
+						contentType: 'application/json',
+						success: function (data) {
+							var str = '<form id="form_add" action="/api/bank/edit" method="put">'
+							str += '<input type="hidden" class="form-control" id="id" name="id" value="' + data.id + '">'
+							str += '<div class="form-group">'
+							str += '<label>Nama</label>'
+							str += '<input type="hidden" class="form-control" id="nameold" name="nameold" value="' + data.name + '">'
+							str += '<input type="text" class="form-control" id="name" name="name" value="' + data.name + '">'
+							str += '<span id="validate_name" class="text-danger"></span>'
+							str += '</div>'
+							str += '<div class="modal-footer">'
+							str += '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="btnNo">Batal</button>'
+							str += '<button type="submit" class="btn btn-primary" id="btnSave">Save changes</button>'
+							str += '</div>'
+							str += '</form>'
+
+							//console.log("s" + courier.name)
+							//var nama_awal = courier.name;
+							$(".modal-title").html("Ubah")
+							$(".modal-body").html(str)
+							$("#btnSave").html("Simpan")
+							$("#btnNo").html("Batal")
+							//$("#btnSave").off('click').on("click", updateCategory)   //untuk tanpa parameter
+							$("#btnSave").off('click').on("click",
+								function () {
+									var nameold = $("#nameold").val()
+									var name = $("#name").val()
+									if (nameold == name) {
+										$("#modalCenter").modal('toggle')
+										//console.log("1")
+										//alert("masuk ges")
+										//getAllCourier(0, 5)
+										window.location.href = '/master/bank'
+										return false
+									}
+									else {
+										updateBank()	//mengirimkan parameter id	
+									}
+								})
+							$("#modalCenter").modal('show')
+
+						}
+					})
+				}
+
+				function updateBank(id) {
+					var formdata = '{'
+					formdata += '"name":"' + $("#name").val() + '"'
+					formdata += '}'
+					alert("kumaha")
+
+					$.ajax({
+						url: '/api/bank/edit/' + id,
+						data: formdata,
+						type: 'put',
+						contentType: 'application/json',
+						success: function () {
+							$("#modalCenter").modal('toggle')
+							getAllData(0, 5)
+						}
+					})
+				}
+			</script>
+
+		</div>
+	</div>
+</body>
+
+</html>

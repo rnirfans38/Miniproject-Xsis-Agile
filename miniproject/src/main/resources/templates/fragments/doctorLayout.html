@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<!-- =========================================================
+* Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
+==============================================================
+
+* Product Page: https://themeselection.com/products/sneat-bootstrap-html-admin-template/
+* Created by: ThemeSelection
+* License: You must have a valid license purchased in order to legally use the theme for your project.
+* Copyright ThemeSelection (https://themeselection.com)
+
+=========================================================
+ -->
+<!-- beautify ignore:start -->
+<html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="/sneat/assets/"
+  data-template="vertical-menu-template-free"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>Dashboard - Analytics | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/sneat/assets/img/favicon/favicon.ico" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="/sneat/assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="/sneat/assets/vendor/fonts/boxicons.css" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="/sneat/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="/sneat/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="/sneat/assets/css/demo.css" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="/sneat/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+    <link rel="stylesheet" href="/sneat/assets/vendor/libs/apex-charts/apex-charts.css" />
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="/sneat/assets/vendor/js/helpers.js"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="/sneat/assets/js/config.js"></script>
+  </head>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="container-fluid py-3">
+      <div class="d-flex flex-column h-100">
+        <!-- Menu -->
+	
+        <!-- / Menu -->
+
+        <!-- Layout container -->
+ 
+          <!-- Navbar -->
+          <div class=" d-flex align-items-center pl-3 ">
+				<nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                      <li class="breadcrumb-item ">
+                        <a href="javascript:void(0);" class="text-primary">Beranda</a>
+                      </li>
+                      <li class="breadcrumb-item active">Profile</li>
+                    </ol>
+                  </nav>
+          </div>
+          <!-- / Navbar -->
+
+          <!-- Content wrapper -->
+          <div class="content-wrapper">
+            <!-- Content -->
+            
+            <div class="row">
+				<!-- profile -->
+				<div class="col-lg-4 col-md-4 mb-4">
+					<div class="row">
+						<div class="card h-100 p-0">
+							<div class="card-header bg-primary p-0 pb-2 " style="opacity: .5;">
+								
+							</div>
+							<div class="card-body">
+								
+								<div class="d-flex flex-column justify-content-center px-2 pb-3 pt-2">
+									<div id="editBtn" class="d-flex flex-row justify-content-end">
+										<button type="button" class="btn btn-transparent p-0" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="openModal()">
+										 <img src="/icons/pencil-edit.svg" alt="user-edit" height="10" width="10" id="editData">
+							 			</button>
+									
+									</div>
+									<div id="doctorDatas" class="d-flex align-items-center justify-content-center flex-column">
+									
+									<img src="/img/5.png" alt="user-avatar" class="d-block rounded-circle border border-2" style="padding: 3px;" height="130" width="130" id="uploadedPhoto">
+									<div id="doctorDetails" class="d-flex align-items-center flex-column p-1 lh-1">
+										<p id="doctorName" class="fw-bold m-0 pt-1" style="font-size: 20px;">dr. Tatja Mark, Sp.A</p>
+										<p id="doctorSpec" class="m-0 pb-1" style="font-size: 13px;">Spesialis Anak</p>
+										<div id="stars" class="text-warning">
+											<i class='bx bxs-star' ></i>
+											<i class='bx bxs-star' ></i>
+											<i class='bx bxs-star' ></i>
+											<i class='bx bxs-star' ></i>
+											<i class='bx bxs-star-half' ></i>
+											
+										</div>
+									</div>
+								</div>
+								
+								</div>
+							
+								<div id="janji-card" class="border-top border-2 d-flex py-2 justify-content-between">
+									<p class="fw-bold primary m-0">Janji</p>
+									<span class="badge bg-primary rounded-pill">3</span>
+									
+								</div>
+								<div class="border-top border-2 pt-2">
+									<p class="fw-bold">Obrolan / Konsulatasi</p>
+								</div>
+							</div>
+						</div>
+						<div class="card h-100 p-0 mt-4">
+							<div class="card-header bg-primary bg-opacity-25 px-4 py-2">
+								<strong class="text-white">Tentang Saya</strong>	
+							</div>
+							<div class="card-body">
+								<div id="aboutDoctor" class="d-flex  flex-column">
+									<div id="tindakan-medis" class="py-3">
+										<p class="text-primary pb-1"><strong>Tindakan Medis</strong></p>
+										<div id="listTindakan" class="px-2 m-0 lh-sm">
+											<p class="m-0 lh-sm">- Fisioterapi Anak</p>
+											<p class="m-0 lh-sm">- Konsultasi kesehatan anak</p>
+											<p class="m-0 lh-sm">- Skrining tumbuh kembang anak</p>
+											<p class="m-0 lh-sm">- Vaksin anak</p>
+											<p class="m-0 lh-sm">- Konsultasi alergi anak</p>
+											<p class="m-0 lh-sm">- Konsultasi psikologi anak</p>
+											<p class="m-0 lh-sm">- Tes pendengaran OAE</p>
+										</div>	
+									</div>
+									<div id="riwayat-praktek" class="py-3">
+										<p class="text-primary pb-1"><strong>Riwayat Praktek</strong></p>
+										<div id="listTindakan" class="px-2">
+											<div id="rs-detail">
+												<p id="rs" class="m-0 lh-sm">RS Mitra, Depok</p>
+												<div id="" class="ps-2 d-flex justify-content-between" style="font-size:13px;">
+													<p>Dokter anak</p>
+													<p>2019 - sekarang</p>
+												</div>
+											</div>
+											<div id="rs-detail">
+												<p id="rs" class="m-0 lh-sm">RSIA Bunda, Jakarta Pusat</p>
+												<div id="" class="ps-2 d-flex justify-content-between" style="font-size:13px;">
+													<p>Dokter anak</p>
+													<p>2018 - sekarang</p>
+												</div>
+											</div>
+											<div id="rs-detail">
+												<p id="rs" class="m-0 lh-sm">RSUP Hasan Sadikin, Bandung</p>
+												<div id="" class="ps-2 d-flex justify-content-between" style="font-size:13px;">
+													<p>Dokter anak</p>
+													<p>2016 - 2018</p>
+												</div>
+											</div>
+											
+										</div>	
+									</div>
+									<div id="pendidikan" class="py-3">
+										<p class="text-primary pb-1"><strong>Pendidikan</strong></p>
+										<div id="list-pendidikan" class="px-2">
+											<div id="univ-details">
+												<p id="univ" class="m-0 lh-sm">Universitas Padjadjaran</p>
+												<div id="" class="ps-2 d-flex justify-content-between" style="font-size:13px;">
+													<p>Spesialis anak</p>
+													<p>2016</p>
+												</div>
+											</div>
+											<div id="univ-details">
+												<p id="univ" class="m-0 lh-sm">RSIA Bunda, Jakarta Pusat</p>
+												<div id="" class="ps-2 d-flex justify-content-between" style="font-size:13px;">
+													<p>Kedokteran Umum</p>
+													<p>2011</p>
+												</div>
+											</div>
+											
+											
+										</div>	
+									</div>
+									
+								</div>
+								
+							</div>
+						</div>	
+					</div>
+					
+					
+				</div>
+				 
+				<!-- history -->
+					<div class="col-md-6 col-lg-8 mb-4">
+                  <div class="card vh-100">
+                    <div class="card-header bg-primary p-0 pb-2" style="opacity: .5;">
+                      
+                    </div>
+                    <div class="card-body px-0">
+						<div class="header p-2 border-bottom border-1">
+							<ul class="nav nav-pills" role="tablist">
+								<li class="nav-item">
+		                          <button  type="button" class="btn rounded-pill btn-primary" role="tab">Spesialisasi</button>
+		                        </li>
+		                        <li class="nav-item">
+		                          <button  type="button" class="nav-link fw-bold text-primary" role="tab">Tindakan</button>
+		                        </li>
+		                        <li class="nav-item">
+		                          <button type="button" class="nav-link fw-bold text-primary" role="tab">Aktifitas</button>
+		                        </li>
+		                        <li class="nav-item">
+		                          <button type="button" class="nav-link fw-bold text-primary" role="tab">Konsultasi</button>
+		                        </li>
+		                        <li class="nav-item">
+		                          <button type="button" class="nav-link fw-bold text-primary" role="tab">Pengaturan</button>
+		                        </li>
+                      		</ul>
+						</div>
+                      <div class="tab-content p-0" layout:fragment="content">
+                        <!-- content filled by the profile html -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+				
+			</div>
+         </div>
+      </div>
+    </div>
+    
+    <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button id="btn-save" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+              
+    
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    
+    <script src="/sneat/assets/vendor/libs/popper/popper.js"></script>
+    <script src="/sneat/assets/vendor/js/bootstrap.js"></script>
+    <script src="/sneat/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+
+    <script src="/sneat/assets/vendor/js/menu.js"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="/sneat/assets/vendor/libs/apex-charts/apexcharts.js"></script>
+
+    <!-- Main JS -->
+    <script src="/sneat/assets/js/main.js"></script>
+
+    <!-- Page JS -->
+    <script src="/sneat/assets/js/dashboards-analytics.js"></script>
+
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script async defer src="https://buttons.github.io/buttons.js"></script>
+  </body>
+</html>

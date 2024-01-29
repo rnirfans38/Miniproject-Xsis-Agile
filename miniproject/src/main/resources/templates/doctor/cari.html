@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html layout:decorate="~{fragments/layout}">
+
+<head>
+	<title>Cari Dokter</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<!-- Modal -->
+		<div class="modal fade modalCourier" id="modalCenter" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalCenterTitle">Modal title</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+						</button>
+					</div>
+					<div class="modal-body">
+						...
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Modal -->
+
+		<!--<div class="col-1 col-md-8 col-sm-8 text-end">
+			<button onclick="caridokterform()" class="btn btn-primary text-left" allign="left">Cari Dokter</button>
+		</div>-->
+
+		<div class="row">
+			<div class="col-12">
+				<div class="card" style='background-color: #FFFF;'>
+					<div class="card-body">
+						<div class='row'>
+							<div class='column' style='width: 50%;' id="title">
+
+								<table class="card-title titleCard">
+									<tr id="hasilLokasi"></tr>
+									<tr id="hasilSpesialisasi"></tr>
+									<tr id="hasilFullname"></tr>
+									<tr id="hasilTreatment"></tr>
+								</table>
+							</div>
+							<div class='column' align='right' style='width: 50%;'>
+								<a href="#" class="btn btn-outline-primary" id="btnSearch">
+									<i class="fa fa-search" aria-hidden="true"></i> Ulangi Pencarian</a>
+							</div>
+						</div>
+						<div class="row" style='margin-top: 1%;' id="listDokter">
+						</div>
+						<div class='column' align='right' style='width: 100%;'>
+							<label id="btnTampilan"></label>
+							<input type="hidden" id="page" value="1">
+							<button class="btn btn-outline-primary" id=btnPrev onclick="btnPrev()">Sebelumnya</button>
+							<button class="btn btn-outline-primary" id=btnNext onclick="btnNext()">Selanjutnya</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<style>
+			.btnChat {
+				margin-top: -100px;
+			}
+
+			.btnJanji {
+				margin-top: -20px;
+			}
+
+			.buttonChat {
+
+				height: 70px;
+			}
+		</style>
+
+		<script>
+
+			function caridokterform() {
+				$.ajax({
+					url: '/api/caridokter/lokasi',
+					type: 'get',
+					contentType: 'application/json',
+					success: function (response) {
+						$.ajax({
+							url: '/api/caridokter/spesialisasi',
+							type: 'get',
+							contentType: 'application/json',
+							success: function (response2) {
+								$.ajax({
+									url: '/api/caridokter/tindakan',
+									type: 'get',
+									contentType: 'application/json',
+									success: function (response3) {
+										var formcari = ''
+										formcari += '<a style="margin-left: 10%; text-align: left; font-size: 16px;">'
+										formcari += 'Masukan Minimal 1 Kata Kunci untuk Pencarian Dokter</a>'
+										formcari += '<div style="margin-right: 10%; margin-left: 10%;">'
+										formcari += '<div class="form-group basic-dropdown">'
+										formcari += '<label id="lokasi" class="col-form-label">Lokasi</label>'
+										formcari += '<select class="form-control custom-select custom-select-md" id="lokasi">'
+										console.log(response)
+										formcari += '<option value="">--Pilih Lokasi--</option>';
+										for (i = 0; i < response.length; i++) {
+											formcari += '<option value="' + response[i].name + '">' + response[i].name + '</option>'
+										}
+										formcari += '</select>'
+										formcari += '</div>'
+										formcari += '<div class="form-group">'
+										formcari += '<label for="nameDoctor" class="col-form-label">Nama Dokter</label>'
+										formcari += '<input type="text" class="form-control" id="nameDoctor" placeholder="Enter Fullname">'
+										formcari += '</div>'
+										formcari += '<div class="form-group basic-dropdown">'
+										formcari += '<label for="spesialisasi" class="col-form-label">Spesialisasi/Sub-spesialisasi*</label>'
+										formcari += '<select class="form-control custom-select custom-select-md" id="spesialisasi">'
+										console.log(response2)
+										formcari += '<option value="" selected>--Pilih Spesialisasi--</option>';
+										for (i = 0; i < response2.length; i++) {
+											formcari += '<option value="' + response2[i].name + '">' + response2[i].name + '</option>'
+										}
+										formcari += '</select>'
+										formcari += '<label id="Msg"></label>'
+										formcari += '</div>'
+										formcari += '<div class="form-group basic-dropdown">'
+										formcari += '<label for="tindakan" class="col-form-label">Tindakan Medis</label>'
+										formcari += '<select class="form-control custom-select custom-select-md" id="tindakan">'
+										console.log(response3)
+										formcari += '<option value="kosong" selected>--Pilih Tindakan Medis--</option>';
+										for (i = 0; i < response3.length; i++) {
+											formcari += '<option value="' + response3[i].name + '">' + response3[i].name + '</option>'
+										}
+										formcari += '</select>'
+										formcari += '</div>'
+										formcari += '</div>'
+										formcari += '<div style="text-align: center">'
+										formcari += '<br>'
+										formcari += '<fieldset class="w-100">'
+										formcari += '<button type="button" class="btn btn-outline-primary" onclick="aturUlang()" style="margin-right: 5%; border-radius: 8px; width: 25%; font-size: 15px;">Atur Ulang</button>'
+										formcari += '<button type="button" class="btn btn-primary" style="margin-right: 5%; border-radius: 8px; width: 25%; font-size: 15px;" onclick="cariDokter()">Cari</button>'
+										formcari += '<br>'
+										formcari += '</fieldset>'
+										formcari += '</div>'
+
+										$('#modalCenter').modal('show')
+										$('.modal-title').html('Cari Dokter')
+										$('.modal-body').html(formcari)
+									}
+								})
+							}
+						})
+
+					}
+				})
+
+			}
+
+			function cari() {
+				window.open('cari', '_self')
+			}
+			function aturUlang() {
+				caridokterform()
+			}
+			function cariDokter() {
+				var namadokter = $('#nameDoctor').val();
+				//var fullname = namadokter.toLowerCase().trim();
+				var lokasi = $('#lokasi').val();
+				//var location = lokasi.replace(" ", "%20");    // kode URL untuk spasi. %20
+				var spesialisasi = $('#spesialisasi').val();
+				//var specialization = spesialisasi.replace(" ", "%20");
+				var tindakan = $('#tindakan').val();
+				//var treatment = tindakan.replace(" ", "%20");
+
+				if (namadokter == "") {
+					namadokter = 'kosong'
+				}
+				if (spesialisasi == "") {
+					$('#Msg').html('*Spesialisasi tidak boleh kosong')
+					$('#spesialisasi').css('border-color', 'red');
+
+				} else {
+					sessionStorage.setItem("location", location);
+					sessionStorage.setItem("fullname", fullname);
+					sessionStorage.setItem("specialization", specialization);
+					sessionStorage.setItem("treatment", treatment);
+
+					sessionStorage.setItem("specialization2", spesialisasi);
+					sessionStorage.setItem("location2", lokasi);
+					sessionStorage.setItem("fullname2", namadokter);
+					sessionStorage.setItem("treatment2", tindakan);
+					$("#mymodal").modal("hide");
+
+					cari();
+				}
+			}
+			$("#btnSearch").click(function () {
+				caridokterform();
+			});
+
+			listRs(page);
+			listDokter(page);
+			//listDokter();
+			tampilpencarian(page);
+
+			function btnPrev() {
+				console.log(page)
+				var page = parseInt($('#page').val())
+				page -= 1;
+				if (page < 1) {
+					page = 1;
+				}
+				listDokter(page)
+				if (page == 1) {
+					$('#btnPrev').prop('disabled', true)
+					$('#btnNext').prop('disabled', false)
+				} else {
+					$('#btnPrev').prop('disabled', false)
+					$('#btnNext').prop('disabled', false)
+				}
+			}
+			function btnNext() {
+				var page = parseInt($('#page').val())
+				page += 1;
+				listDokter(page)
+				if (page == 3) {
+					$('#btnNext').prop('disabled', true)
+					$('#btnPrev').prop('disabled', false)
+				} else {
+					$('#btnPrev').prop('disabled', false)
+					$('#btnNext').prop('disabled', false)
+				}
+			}
+
+			function tampilpencarian(page) {
+				var specialization = sessionStorage.getItem('specialization2', specialization);
+				var location = sessionStorage.getItem("location2", location);
+				var fullname = sessionStorage.getItem("fullname2", fullname);
+				var treatment = sessionStorage.getItem("treatment2", treatment);
+				console.log("cek lokasi" + location)
+
+				if (specialization == null || specialization == 'kosong') {
+					$("#hasilSpesialisasi").text("");
+				} else {
+					$("#hasilSpesialisasi").text("Spesialisasi/Sub-spesialisasi: " + specialization.replace("Spesialis", ""));
+				}
+				if (location == null || location == 'kosong') {
+					$("#hasilLokasi").text("Hasil Pencarian berdasarkan kata kunci:");
+				} else {
+					$("#hasilLokasi").text("Hasil Pencarian berdasarkan kata kunci: " + location);
+				}
+				if (fullname == null || fullname == '') {
+					$("#hasilFullname").text("");
+				} else {
+					$("#hasilFullname").text("Nama Dokter: " + fullname);
+				}
+				if (treatment == null || treatment == 'kosong') {
+					$("#hasilTreatment").text("");
+				} else {
+					$("#hasilTreatment").text("Tindakan Dokter: " + treatment);
+				}
+				sessionStorage.removeItem('fullname2', fullname)
+				sessionStorage.removeItem('treatment2', treatment)
+				sessionStorage.removeItem('specialization2', specialization)
+				sessionStorage.removeItem('location2', location)
+			}
+
+			function listDokter(page) {
+				console.log("page " + page)
+				var location = sessionStorage.getItem('location', location);
+				var fullname = sessionStorage.getItem('fullname', fullname);
+				var specialization = sessionStorage.getItem('specialization', specialization);
+				var treatment = sessionStorage.getItem('treatment', treatment);
+
+				if (location == "" || location == null) {
+					location = "kosong"
+				}
+				if (fullname == "" || fullname == null) {
+					fullname = "kosong"
+				}
+				if (specialization == "" || specialization == null) {
+					specialization = "kosong"
+				}
+				if (treatment == "" || treatment == null) {
+					treatment = "kosong"
+				}
+
+				$.ajax({
+					url: "/api/hasil/caridokter/" + location + "/" + fullname + "/" + specialization + "/" + treatment,
+					type: "get",
+					success: function (hasil) {
+						console.log("hasil cari " + hasil)
+						var str = "";
+						var str2 = "<a class='btn btn-outline-primary btnChat'>Chat</a>";
+						var tampil = "";
+						var minShowData = 0;
+						var totalData = 0;
+						var maxShowData = 0;
+						var online = [];
+						var id_dokter = 0;
+						var arrid = [];
+
+
+						if (hasil.length == 0) {
+							str += "<h4 style='margin-left:35%;color:#0089a8;'>Data Dokter tidak ditemukan</h4>";
+							$("#listDokter").html(str);
+							$('#btnPrev').prop('disabled', true)
+							$('#btnNext').prop('disabled', true)
+						} else {
+							for (var i = 0; i < hasil.length; i++) {
+								if (hasil[i].doctor_id != id_dokter) {
+									console.log("id_dokter" + id_dokter)
+									maxShowData++;
+								}
+								id_dokter = hasil[i].doctor_id;
+								console.log("id_dokter* " + id_dokter)
+							}
+
+							var limit = 4;
+							var pageIni = (page - 1);
+							var offset = pageIni * limit
+							var max = offset + limit
+							if (max > maxShowData) {
+								$('#btnNext').prop('disabled', true)
+							}
+							if (max > maxShowData) {
+								max = maxShowData;
+							}
+							page = $('#page').val(page);
+
+							id_dokter = 0;
+
+							for (var i = 0; i < hasil.length; i++) {
+								if (hasil[i].is_online) {
+									online[i] = hasil[i].doctor_id;
+								}
+								if (hasil[i].doctor_id != id_dokter) {
+									totalData++;
+
+									if (totalData < offset + 1) {
+										id_dokter = hasil[i].doctor_id;
+										continue;
+									}
+									if (totalData > max) {
+										break;
+									}
+
+									str += "<div id='" + hasil[i].doctor_id + "' class='col-lg-6' nama-dokter='" + hasil[i].fullname + "' tindakan-dokter='" + hasil[i].tindakan + "'>";
+									str += "<div class='card' style='background-color: #97dce8; margin-bottom:3%;'>"
+									str += "<div class='card cardMaster'><div class='card-body'>"
+									str += "<div class='row' style='margin-top: 0;'><div class='column' style='width: 75%;'>"
+									str += "<h4 class='card-text namaDokter'>" + hasil[i].fullname + "</h4>"
+									str += "<div class='pengalamanDokter'>"
+									str += "<a>" + hasil[i].spesialis + "</a><br><a>" + hasil[i].tahun_pengalaman + " Tahun Pengalaman</a></div>";
+									str += "<div class='listRS' id='listRS" + hasil[i].doctor_id + "'>";
+									str += "</div>"
+									var doctorId = hasil[i].doctor_id
+									str += "<a id='btnLihat'><button id='btnLihat' value='" + hasil[i].doctor_id + "'onclick='detaildokter(" + doctorId + ")' class='btn btn-outline-primary btnDetail'>Lihat info lebih banyak</button></a></div>"
+									str += "<div class='column' style='width:125px'><img class='mr-3 class doctorImage' src='" + hasil[i].image_path + "' style='width: 125px; height: 125px;'>"
+									str += "<div align='center' class ='buttonChat' id='buttonChat" + hasil[i].doctor_id + "' style='margin-top: 20%;'><a class='offline btnChat' disabled>Offline</a></div>"
+									str += "<br>"
+									//tambah kondisi online mmfs rumah sakit
+									str += "<div align='center' id='buttonJanji'><button type='button' class='btn btn-primary btnJanji'>Buat Janji</button></div>"
+									str += "</div></div></div></div></div></div>"
+
+									arrid[i] = hasil[i].doctor_id;
+
+								}
+								id_dokter = hasil[i].doctor_id;
+
+							}
+							console.log("offset " + offset)
+							tampil = "Menampilkan " + (offset + 1) + " - " + max + " dari " + maxShowData;
+							$('#btnTampilan').html(tampil);
+							$("#listDokter").html(str);
+
+							for (var i = 0; i < online.length; i++) {
+								$("#buttonChat" + online[i]).html(str2);
+							}
+							listRs(arrid);
+						}
+					}
+				});
+				$('#btnPrev').prop('disabled', true)
+
+				sessionStorage.removeItem('specialization', specialization)
+				sessionStorage.removeItem('fullname', fullname)
+				sessionStorage.removeItem('treatment', treatment)
+				sessionStorage.removeItem('location', location)
+			}
+
+			function listRs(arrid) {
+				for (var i = 0; i < arrid.length; i++) {
+					var listid = "#listRS" + arrid[i];
+					//console.log(arrid[i]+'jjj');
+					sublistRs(listid, arrid[i]);
+				}
+			};
+
+			function sublistRs(listid, id) {
+				if (id > 0) {
+					//console.log("ideuyy" + id);
+					$.ajax({
+						url: "/api/hasil/alldoctorschedule/" + id,
+						type: "get",
+						contentType: "application/json",
+						success: function (result) {
+							console.log("result test" + id)
+							var temp = "";
+							var nama_rs = "";
+							for (var a = 0; a < result.length; a++) {
+								if (result[a].nama_rs != nama_rs) {
+									temp += "<label class='" + result[a].doctor_id + "' nama-lokasi='" + result[a].location_level + "'><i class='fa fa-hospital-o' aria-hidden='true'></i> " + result[a].nama_rs + " (" + result[a].location + ", " + result[a].location_level + ")</label>"
+								}
+								nama_rs = result[a].nama_rs;
+							}
+							$(listid).html(temp);
+						}
+					});
+				}
+
+			}
+
+			function detaildokter(id) {
+				sessionStorage.setItem("id", id);
+				window.open('/doctor/' + id, '_self')
+			}
+
+		</script>
+	</div>
+</body>
+
+</html>

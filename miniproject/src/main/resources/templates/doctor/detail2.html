@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html layout:decorate="~{fragments/layout}">
+
+<head>
+	<title>Doctor Detail</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<!-- Modal Cari Dokter -->
+		<div class="modal fade modalCourier" id="modalCenter" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalCenterTitle">Modal title</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+						</button>
+					</div>
+					<div class="modal-body">
+						...
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Modal -->
+		<span style="display: none;" id="docId" th:text="${abc}"></span>
+		<div class="card">
+			<div class="card-body">
+				<div class="row">
+					<div style='margin-top: 0%' class="container-fluid">
+						<div class="card">
+							<div class="card-body">
+								<table width="100%">
+									<thead>
+										<tr>
+											<td width=20%></td>
+											<td width=60%></td>
+											<td width=20%></td>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td id="dokterPhoto"></td>
+											<td>
+												<div style='margin-left: 25%' id="namadia"></div>
+												<div style='margin-left: 25%' id="pengalaman"></div>
+											</td>
+											<td>
+												<div class="row mb-3">
+													<div style='text-align:center;'>
+														<div id="chat"></div>
+														<!--<a class="mb-0"style="color: #7571f9; font-size:16px;">Rp.30.000</a>-->
+														<div id="hargaOnline" style="color: #7571f9; font-size:16px;">
+														</div>
+													</div>
+												</div>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div style='margin-top: 1%; padding-left: 15px;' class="col-lg-4 col-xl-3">
+						<div class="card">
+							<div class="card-header">
+								<h4 style="color: #7571f9;">Tindakan Medis</h4>
+							</div>
+							<div style="margin-top: -3%;" class="card-body">
+								<div class="row mb-0" style="border: 0px solid; padding: 10px;" id="tindakan"></div>
+							</div>
+						</div>
+						<div style='margin-top: 5%' class="card">
+							<div class="card-header">
+								<h4 style="color: #7571f9;">Riwayat Praktek</h4>
+							</div>
+							<div style="margin-top: -3%;" class="card-body">
+
+								<div class="row mb-0" style="border: 0px solid; padding: 10px;" id="riw"></div>
+
+							</div>
+						</div>
+						<div style='margin-top: 5%' class="card">
+							<div class="card-header">
+								<h4 style="color: #7571f9;">Pendidikan</h4>
+							</div>
+							<div style="margin-top: -3%;" class="card-body">
+								<div class="row mb-0" style="border: 0px solid; padding: 10px;" id="educationList">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div style='margin-top: 1%' class="col-lg-8 col-xl-9">
+						<div class="card">
+							<div class="card-header">
+								<h4 style="color: #7571f9;">Lokasi Praktek</h4>
+							</div>
+							<div class="card-body">
+								<div id="lokasiCard"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script>
+
+			//var doctorId = $("#abc").val()
+			var doctorId = document.getElementById("docId").textContent
+			console.log("tes=" + doctorId)
+			jenjanglist(doctorId);
+			tindakan(doctorId);
+			riwayat(doctorId);
+			namadia(doctorId);
+			pengalaman(doctorId);
+			chat(doctorId);
+			educationList(doctorId);
+
+			console.log(doctorId)
+			/*$(document).ready(function () {
+				console.log("apakah masuk?")
+				tindakan();
+				riwayat();
+			});*/
+
+			//var id = sessionStorage.getItem("id");
+
+			function jenjanglist(id) {
+				$.ajax({
+					url: "/api/detail/lokasi/" + id,
+					type: "get",
+					success: function (hasil) {  //hasil adalah response data dari back end query per dokter
+						console.log("data " + hasil)
+						var str = "";
+						var RSSekarang = "";  //assign untuk melihat rumah sakit sama
+						let hitungRS = 0;
+						var jadwalHTML = "";
+						for (var i = 0; i < hasil.length; i++) {
+							console.log("length data " + hasil.length)
+							if (i == 0) { //untuk jadwal praktik untuk data pertama
+								RSSekarang = hasil[i].id;
+								console.log("cek id 1 " + id)
+								console.log("cek id 2 " + hasil[i].id)
+								jadwalHTML = "<table>";
+								jadwalHTML += "<thead><tr><td width= 27%></td><td width= 100%> </td></td><td width= 100%> </td></tr></thead>";
+								jadwalHTML += "<tbody><tr>";
+								jadwalHTML += "<td>" + hasil[i].day + "</td> <td>" + hasil[i].time_schedule_start + "-" + hasil[i].time_schedule_end + "</td>"
+								jadwalHTML += "<td  style='text-align: center;'>"
+								jadwalHTML += "</td></tr>";
+								jadwalHTML += '</table>';
+
+							}
+							else { //untuk data selanjutnya
+								if (hasil[i].id == RSSekarang) { //jika rs nya sama
+									console.log("cek rs " + RSSekarang)
+									jadwalHTML += "<table>";
+									jadwalHTML += "<thead ><tr><td width= 27%> </td> <td width= 100%> </td><td width= 100%> </td></tr></thead>";
+									jadwalHTML += "<tbody><tr>";
+									jadwalHTML += "<td>" + hasil[i].day + "</td> <td>" + hasil[i].time_schedule_start + "-" + hasil[i].time_schedule_end + "</td>"
+									jadwalHTML += "<td  style='text-align: center;'></td></tr>"
+									jadwalHTML += '</table>';
+
+									if (i == hasil.length - 1) {  // hasil.length (6) - 1 = 5 ketika data terakhir
+										str += "<div class='card'>";
+										str += "<div class='card-body'>";
+										str += "<div style='border: 1px solid; padding: 10px;color: #7571f9;' id='jenjanglist2'>";
+										str += "<table width=100% style='border: 0px solid; padding: 10px;'>";
+										str += "<thead><tr><td width= 20%> </td><td width= 100%> </td></tr></thead>";
+										str += "<tr>";
+										str += "<td width= 50% style='border: 0px solid; padding: 10px;'>" + hasil[i].name + "<br>";
+										str += "<a style='margin-left:5%;'>" + hasil[i].specialization + "</a><br>";
+										str += "<a style='margin-left:5%;'><i class='fa fa-map-marker' aria-hidden='true'></i>" + " " + hasil[i].full_address + " " + hasil[i].kec + "," + hasil[i].kab + "</a><br>";
+										str += "<a style='text-align: center;'><br>";
+										str += "</div>";
+										str += "<td style='text-align: center;'><br>";
+										str += "<a>Konsultasi mulai dari</a><br>";
+										str += "<a> Rpss " + hasil[i].price_start_from + "</a>";
+										str += "</td>";
+										str += "</tr>";
+										str += "</table>"
+										str += "<p class='text-muted'>";
+										str += "<code></code>";
+										str += "</p>";
+										str += "<div id='accordion-one' class='accordion'>";
+										str += "<div class='card divCollapse'>";
+										str += "<div class='card-header'>";
+										str += "<h6 id='acr3' class='mb-0 collapsed' onclick='collapsedManual(this);' aria-expanded='false' aria-controls='collapseOne'>";
+										str += "<i  class='fa dua' aria-hidden='true'></i> Lihat Jadwal Praktik";
+										str += "</h6>";
+										str += "</div>";
+										str += "<div id='collapseOne' class='collapse' data-parent='#accordion-one'>";
+										str += "<div class='card-body' id='lokasi" + i + "'>";
+										str += jadwalHTML;
+										str += "<input class='btn btn-primary btnEditt' type='button' value='Buat Janji'>";
+										str += "</div>";
+										str += "</div>";
+										str += "</div>";
+										str += "</div> ";
+										str += "</div>";
+										str += "</div>";
+									}
+								} else { //jika rs nnya beda
+									if (hitungRS == 0) {
+										//alert(hasil[i-1].kab)
+										str += "<div class='card'>";
+										str += "<div class='card-body'>";
+										str += "<div style='border: 1px solid; padding: 10px;color: #7571f9;' id='jenjanglist2'>";
+										str += "<table td width= 100% style='border: 0px solid; padding: 10px;'>";
+										str += "<thead ><tr><td width= 20% style='border: 0px solid; padding: 10px;'> </td> <td width= 100%> </td></tr></thead>";
+										str += "<tr>";
+										str += "<td width= 50% style='border: 0px solid; padding: 10px;'>" + hasil[i - 1].name + "<br>";
+										str += "<a style='margin-left:5%;'>" + hasil[i - 1].specialization + "</a><br>";
+										str += "<a style='margin-left:5%;'><i class='fa fa-map-marker' aria-hidden='true'></i>" + " " + hasil[i - 1].full_address + " " + hasil[i - 1].kec + "," + hasil[i - 1].kab + "</a><br>";
+										str += "<a style='text-align: center;'> <br>";
+										str += "</div>";
+										str += "<td style='text-align: center;'><br>";
+										str += "<a style='text-align: center;'>Konsultasi mulai dari</a><br>";
+										str += "<a style='text-align: center;'> Rp " + hasil[i - 1].price_start_from + "</a>";
+										str += "</td>";
+										str += "</tr>";
+										str += "</table>"
+										str += "<p class='text-muted'>";
+										str += "<code></code>";
+										str += "</p>";
+										str += "<div id='accordion-two' class='accordion'>";
+										str += "<div class='card divCollapse'>";
+										str += "<div class='card-header'>";
+										str += "<h6 id='acr1' class='mb-0' onclick='collapseManual(this);' aria-expanded='true' aria-controls='collapseOne1'>";
+										str += "<i class='fa satu' aria-hidden='true'></i> Lihat Jadwal Praktik";
+										str += "</h6>";
+										str += "</div>";
+										str += "<div id='collapseOne1' class='collapse' data-parent='#accordion-two'>";
+										str += "<div class='card-body' id='lokasi'>" + jadwalHTML + "</div>";
+										str += "<input class='btn btn-primary btnEditt' type='button' value='Buat Janji'>";
+										str += "</div>";
+										str += "</div>";
+										str += "</div> ";
+										str += "</div>";
+										str += "</div>";
+									} else {
+										str += "<div class='card'>";
+										str += "<div  class='card-body'>";
+										str += "<div style='border: 1px solid; padding: 10px;color: #7571f9;' id='jenjanglist2'>";
+										str += "<table >";
+										str += "<thead ><tr><td width= 20%> </td> <td width= 100%> </td></tr></thead>";
+										str += "<tr>";
+										str += "<td width= 82%>" + hasil[i - 1].name + "<br>";
+										str += "<a style='margin-left:5%;'>" + hasil[i - 1].specialization + "</a><br>";
+										str += "<a style='margin-left:5%;'><i class='fa fa-map-marker' aria-hidden='true'></i>" + " " + hasil[i - 1].full_address + " " + hasil[i - 1].kec + "," + hasil[i - 1].kab + "</a><br>";
+										str += "<a style='text-align: center;'> <br>";
+										str += "</div>";
+										str += "<td style='text-align: center;'><br>";
+										str += "<a style='text-align: center;'>Konsultasi mulai dari</a><br>";
+										str += "<a style='text-align: center;'> Rp" + hasil[i - 1].price_start_from + "</a>";
+										str += "</td>";
+										str += "</tr>";
+										str += "</table>"
+										str += "<p class='text-muted'>";
+										str += "<code></code>";
+										str += "</p>";
+										str += "<div id='accordion-three' class='accordion'>";
+										str += "<div class='card divCollapse'>";
+										str += "<div class='card-header'>";
+										str += "<h6 id='acr2' class='mb-0 collapsed' aria-expanded='false' aria-controls='collapseTwo3' onclick='collapsedManual(this);'>";
+										str += "<i class='fa dua' aria-hidden='true'></i> Lihat Jadwal Praktik";
+										str += "</h6>";
+										str += "</div>";
+										str += "<div id='collapseTwo3' class='collapse' data-parent='#accordion-three'>";
+										str += "<div class='card-body' id='lokasi" + i + "'>";
+										str += jadwalHTML;
+										str += "<input class='btn btn-primary btnEditt' type='button' value='Buat Janji'>";
+										str += "</div>";
+										str += "</div>";
+										str += "</div>";
+										str += "</div> ";
+										str += "</div>";
+										str += "</div>";
+									}
+
+									hitungRS++;
+									RSSekarang = hasil[i].id;
+									jadwalHTML = "<table>";
+									jadwalHTML += "<thead ><tr><td width= 27%> </td> <td width= 100%></td><td width= 100%></td></tr></thead>";
+									jadwalHTML += "<tbody><tr>";
+									jadwalHTML += "<td>" + hasil[i].day + "</td><td>" + hasil[i].time_schedule_start + "-" + hasil[i].time_schedule_end + "</td>"
+									jadwalHTML += "<td style='text-align: center;'>"
+									jadwalHTML += "</td></tr>";
+									jadwalHTML += '</table>';
+								}
+							}
+						}
+						$("#lokasiCard").html(str);
+					}
+				});
+			}
+
+
+
+			function tindakan(id) {
+
+				$.ajax({
+					url: "/api/detail/tindakan/" + id,
+					type: "get",
+					success: function (hasil) {
+						var str = "";
+						for (var i = 0; i < hasil.length; i++) {
+							str += "<table width='100%'>";
+							str += "<tr><td style='font-size: 16px;' width='70%'>- " + hasil[i].name + "</td></tr>"
+							str += "</table>"
+						}
+
+						$("#tindakan").html(str);
+					}
+				});
+			}
+
+			console.log("masuk ga???")
+			function riwayat(id) {
+				$.ajax({
+					url: "/api/detail/riwayat/" + id,
+					type: "get",
+					success: function (hasil) {
+						var str = "";
+						for (var i = 0; i < hasil.length; i++) {
+							if (hasil[i].tahun_akhir == null) {
+								hasil[i].tahun_akhir = "sekarang"
+							}
+							str += "<label style='font-size: 16px;margin-left:-3%;'>" + hasil[i].name + ", " + hasil[i].lokasi + "</label>";
+							str += "<table width='100%'>";
+							str += "<tr><td width='5%'></td><td style='font-size: 12px;' width='45%'>" + hasil[i].specialization + "</td>"
+							str += "<td style='font-size: 12px; text-align: right;' width='50%'>" + hasil[i].tahun_awal + " - " + hasil[i].tahun_akhir + "</td></tr>"
+							str += "</table>"
+
+						}
+						$("#riw").html(str);
+					}
+				})
+			}
+
+			function educationList(id) {
+
+				$.ajax({
+					url: "/api/detail/pendidikan/" + id,
+					type: "get",
+					success: function (hasil) {
+						var str = "";
+						for (var i = 0; i < hasil.length; i++) {
+							str += "<label style='font-size: 16px; margin-left:-3%;'>" + hasil[i].institution_name + "</label>";
+							str += "<table width='100%'>";
+							str += "<tr><td width='5%'></td><td style='font-size:12px;' width='65%'>" + hasil[i].major + "</td>"
+							str += "<td style='font-size: 12px; text-align: right;' width='30%'>" + hasil[i].end_year + "</td></tr>"
+							str += "</table>"
+						}
+						$("#educationList").html(str);
+					}
+				});
+			}
+
+
+			console.log("masuk ga?")
+			function namadia(id) {
+				console.log("gimana")
+				$.ajax({
+					url: "/api/detail/nama/" + id,
+					type: "get",
+					success: function (hasil) {
+						var foto = "";
+						foto += "<div>"
+						foto += "<img class='mr-3 class img-circle' src='" + hasil.image_path + "' width='170px' height='170px' style='display: block; margin: auto;'>"
+						foto += "</div class='media align-items-center mb-4'>";
+						var harga = ""
+						harga += "<div style='color: #7571f9; font-size:16px'> Rp " + hasil.price + "</div>"
+						var str = "";
+						str += ""
+						str += "<h4 class='mb-0'>" + hasil.fullname + "</h4>";
+						str += "<p class='text-muted mb-0' style='margin-left:5%;'>" + hasil.specialization + "</p>";
+
+
+						$("#namadia").html(str);
+						$("#dokterPhoto").html(foto);
+						$("#hargaOnline").html(harga);
+					}
+				});
+			}
+
+			function pengalaman(id) {
+
+				$.ajax({
+					url: "/api/detail/pengalaman/" + id,
+					type: "get",
+					success: function (hasil) {
+						var str = "";
+						//var date = new Date();
+						//var tahun = date.getFullYear();
+						var pengalamanDokter = hasil.tahun_akhir - hasil.tahun_awal;
+						console.log("end" + hasil.end_date)
+						str += ""
+						str += "<p class='text-muted mb-0' style='margin-left:5%;'>" + pengalamanDokter + " Tahun Pengalaman" + "</p>";
+
+						$("#pengalaman").html(str);
+					}
+				});
+			}
+
+			function chat(id) {
+				var myDays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+				var date = new Date();
+				var jam = date.getHours();
+				var detik = date.getMinutes();
+				var day = date.getDate();
+				var thisDay = date.getDay(),
+					thisDay = myDays[thisDay];
+				var sekarang = thisDay;
+				var jam = jam + ":" + detik;
+				var jenis = "";
+
+				$.ajax({
+					url: "/api/detail/online/" + id,
+					type: "get",
+					success: function (hasil) {
+						var hari = new Array(8);
+						var jamlp = "";
+						var end = "";
+						var on = "";
+						var temp = "";
+
+						for (var i = 0; i < hasil.length; i++) {
+
+							if (hasil[i].is_online) {
+
+								on = "<button type='button' class='btn btn-primary info'><span>Chat Dokter</span></button>";
+							} else {
+								on = "<a class='mb-0' style='color: #7571f9; font-size: medium;'><b>Offline</b></a>";
+							}
+						}
+						$("#chat").html(on);
+					}
+				});
+			}
+
+			function collapsedManual(obj) {
+				$(obj).text('Lihat Jadwal Praktik');
+				$(obj).attr('aria-expanded', false);
+				$(obj).removeClass('collapsed');
+				$(obj).parents('.divCollapse').find('.show').removeClass('show');
+				$(obj).attr('onclick', 'collapseManual(this)');
+			}
+
+			function collapseManual(obj) {
+				$(obj).text('Sembunyikan Jadwal Praktik');
+				$(obj).attr('aria-expanded', true);
+				$(obj).addClass('collapsed');
+				$(obj).find('i').removeClass('satu').addClass('dua');
+				$(obj).parents('.divCollapse').find('.collapse').addClass('show');
+				$(obj).attr('onclick', 'collapsedManual(this)');
+			}
+
+
+			//UNTUK CARI DOKTER
+			function caridokterform() {
+				$.ajax({
+					url: '/api/caridokter/lokasi',
+					type: 'get',
+					contentType: 'application/json',
+					success: function (response) {
+						$.ajax({
+							url: '/api/caridokter/spesialisasi',
+							type: 'get',
+							contentType: 'application/json',
+							success: function (response2) {
+								$.ajax({
+									url: '/api/caridokter/tindakan',
+									type: 'get',
+									contentType: 'application/json',
+									success: function (response3) {
+										var formcari = ''
+										formcari += '<a style="margin-left: 10%; text-align: left; font-size: 16px;">'
+										formcari += 'Masukan Minimal 1 Kata Kunci untuk Pencarian Dokter</a>'
+										formcari += '<div style="margin-right: 10%; margin-left: 10%;">'
+										formcari += '<div class="form-group basic-dropdown">'
+										formcari += '<label id="lokasi" class="col-form-label">Lokasi</label>'
+										formcari += '<select class="form-control custom-select custom-select-md" id="lokasi">'
+										console.log(response)
+										formcari += '<option value="">--Pilih Lokasi--</option>';
+										for (i = 0; i < response.length; i++) {
+											formcari += '<option value="' + response[i].name + '">' + response[i].name + '</option>'
+										}
+										formcari += '</select>'
+										formcari += '</div>'
+										formcari += '<div class="form-group">'
+										formcari += '<label for="nameDoctor" class="col-form-label">Nama Dokter</label>'
+										formcari += '<input type="text" class="form-control" id="nameDoctor" placeholder="Enter Fullname">'
+										formcari += '</div>'
+										formcari += '<div class="form-group basic-dropdown">'
+										formcari += '<label for="spesialisasi" class="col-form-label">Spesialisasi/Sub-spesialisasi*</label>'
+										formcari += '<select class="form-control custom-select custom-select-md" id="spesialisasi">'
+										console.log(response2)
+										formcari += '<option value="" selected>--Pilih Spesialisasi--</option>';
+										for (i = 0; i < response2.length; i++) {
+											formcari += '<option value="' + response2[i].name + '">' + response2[i].name + '</option>'
+										}
+										formcari += '</select>'
+										formcari += '<label id="Msg"></label>'
+										formcari += '</div>'
+										formcari += '<div class="form-group basic-dropdown">'
+										formcari += '<label for="tindakan" class="col-form-label">Tindakan Medis</label>'
+										formcari += '<select class="form-control custom-select custom-select-md" id="tindakan">'
+										console.log(response3)
+										formcari += '<option value="kosong" selected>--Pilih Tindakan Medis--</option>';
+										for (i = 0; i < response3.length; i++) {
+											formcari += '<option value="' + response3[i].name + '">' + response3[i].name + '</option>'
+										}
+										formcari += '</select>'
+										formcari += '</div>'
+										formcari += '</div>'
+										formcari += '<div style="text-align: center">'
+										formcari += '<br>'
+										formcari += '<fieldset class="w-100">'
+										formcari += '<button type="button" class="btn btn-outline-primary" onclick="aturUlang()" style="margin-right: 5%; border-radius: 8px; width: 25%; font-size: 15px;">Atur Ulang</button>'
+										formcari += '<button type="button" class="btn btn-primary" style="margin-right: 5%; border-radius: 8px; width: 25%; font-size: 15px;" onclick="cariDokter()">Cari</button>'
+										formcari += '<br>'
+										formcari += '</fieldset>'
+										formcari += '</div>'
+
+										$('#modalCenter').modal('show')
+										$('.modal-title').html('Cari Dokter')
+										$('.modal-body').html(formcari)
+									}
+								})
+							}
+						})
+
+					}
+				})
+
+			}
+
+			function cariDokter() {
+				alert("masuk")
+				console.log("masuk else")
+				var namadokter = $('#nameDoctor').val()
+				var lokasi = $('#lokasi').val()
+				var spesialisasi = $('#spesialisasi').val()
+				var tindakan = $('#tindakan').val()
+
+
+				console.log("fullname : " + namadokter)
+				console.log("spec : " + spesialisasi)
+				console.log("lokasi: " + lokasi)
+				console.log("tindakan : " + tindakan)
+
+				if (spesialisasi == "") {
+					$('#Msg').html('*Spesialisasi tidak boleh kosong')
+					$('#spesialisasi').css('border-color', 'red');
+
+				}
+				else {
+					tampilpencarian(namadokter, tindakan, lokasi, spesialisasi);
+					listDokter(0, 3, namadokter, tindakan, lokasi, spesialisasi)
+
+					cari();
+					$("#modalCenter").modal("hide");
+
+					//$("#listDokter").empty()
+
+					//	console.log("diatas listDOkter 02")
+
+
+
+				}
+			}
+
+			function tampilpencarian(namadokter, tindakan, lokasi, spesialisasi) {
+				//var specialization = sessionStorage.getItem('specialization2', specialization);
+				//var location = sessionStorage.getItem("location2", location);
+				//var fullname = sessionStorage.getItem("fullname2", fullname);
+				//var treatment = sessionStorage.getItem("treatment2", treatment);
+				console.log("cek lokasi" + location)
+
+				if (spesialisasi == '') {
+					$("#hasilSpesialisasi").text("");
+				} else {
+					$("#hasilSpesialisasi").text("Spesialisasi/Sub-spesialisasi: " + spesialisasi.replace("Spesialis", ""));
+				}
+				if (lokasi == '') {
+					$("#hasilLokasi").text("Hasil Pencarian berdasarkan kata kunci:");
+				} else {
+					$("#hasilLokasi").text("Hasil Pencarian berdasarkan kata kunci: " + lokasi);
+				}
+				if (namadokter == '') {
+					$("#hasilFullname").text("");
+				} else {
+					$("#hasilFullname").text("Nama Dokter: " + namadokter);
+				}
+				if (tindakan == '') {
+					$("#hasilTreatment").text("");
+				} else {
+					$("#hasilTreatment").text("Tindakan Dokter: " + tindakan);
+				}
+				//sessionStorage.removeItem('fullname2', fullname)
+				//sessionStorage.removeItem('treatment2', treatment)
+				//sessionStorage.removeItem('specialization2', specialization)
+				//sessionStorage.removeItem('location2', location)
+			}
+			function listDokter(currentPage, size, namadokter, tindakan, lokasi, spesialisasi) {
+
+
+				console.log("test before ajax doc search")
+
+				$.ajax({
+					url: "/api/hasil/caridokter2",
+					type: "get",
+					contentType: 'application/json',
+					data: {
+						fullname: namadokter,
+						treatment: tindakan,
+						location: lokasi,
+						specialization: spesialisasi,
+						currentPage: currentPage,
+						size: size
+					},
+
+					success: function (hasil) {
+						console.log("hasil cari " + hasil.data.length)
+						var str = "";
+						var str2 = "<a class='btn btn-outline-primary btnChat'>Chat</a>";
+						var tampil = "";
+						var minShowData = 0;
+						var totalData = 0;
+						var maxShowData = 0;
+						var online = [];
+						var id_dokter = 0;
+						var arrid = [];
+
+						console.log("data length " + hasil.data.length)
+
+						//Paging Button
+
+						var nextMove = hasil.pages + 1 > hasil.total_pages - 1 ? hasil.total_pages - 1 : hasil.pages + 1
+						var testMove = hasil.pages + 1
+						var testMoveInfo = 0
+						var nextCondition = ''
+						if (testMove > hasil.total_pages - 1) {
+							testMoveInfo = "then this page is max page"
+							nextCondition = 'disabled'
+						}
+						else {
+							testMoveInfo = "then this page is not max page"
+						}
+
+						var prevMove = hasil.pages - 1 < 0 ? 0 : hasil.pages - 1
+						var testMove1 = hasil.pages - 1
+						var testMoveInfo1 = 0
+						var prevCondition = ''
+						if (testMove1 < 0) {
+							testMoveInfo1 = "then this page is first page"
+							prevCondition = 'disabled'
+						}
+						else {
+							testMoveInfo1 = "then this page is not first page"
+						}
+
+						//	var str1 = '<button type="button" class="btn btn-outline-primary" id="prevButton" onclick="listDokter(\'' + currentPage + '\', \'' + size + '\', \'' + namadokter + '\', \'' + tindakan + '\', ' + lokasi + ', ' + spesialisasi + ')" ' + prevCondition + '>Sebelumnya</button>'
+						//	str += '<a class="page-link" onclick="getAllMedical(' + nextMove + ',' + size + ')" ' + nextCondition + ' >Next</a>
+						var str1 = '<button type="button" class="btn btn-outline-primary" id="prevButton" onclick="listDokter(' + prevMove + ', ' + size + ', \'' + namadokter + '\', \'' + tindakan + '\', \'' + lokasi + '\', \'' + spesialisasi + '\')" ' + prevCondition + '>Sebelumnya</button>';
+						str1 += '<button type="button" class="btn btn-outline-primary" id="nextButton" onclick="listDokter(' + nextMove + ', ' + size + ', \'' + namadokter + '\', \'' + tindakan + '\', \'' + lokasi + '\', \'' + spesialisasi + '\')" ' + nextCondition + '>Selanjutnya</button>';
+
+						$(".btnPagination").html(str1)
+
+
+						//INTI
+						if (hasil.data.length == 0) {
+							str += "<h4 style='margin-left:35%;color:#0089a8;'>Data Dokter tidak ditemukan</h4>";
+							$("#listDokter").html(str);
+
+						} else {
+
+
+							console.log("ELSE VIEW LIST DOCTOR")
+							//for (var i = 0; i < hasil.length; i++) {
+							//if (hasil[i].doctor_id != id_dokter) {
+							//console.log("id_dokter" + id_dokter)
+							//maxShowData++;
+							//}
+							//id_dokter = hasil[i].doctor_id;
+							//console.log("id_dokter* " + id_dokter)
+							//}
+
+							//	var limit = 4;
+							//var pageIni = (page - 1);
+							//	var offset = pageIni * limit
+							//	var max = offset + limit
+							//	if (max > maxShowData) {
+							//	$('#btnNext').prop('disabled', true)
+							//}
+							//	if (max > maxShowData) {
+							//		max = maxShowData;
+							//	}
+							//	page = $('#page').val(page);
+
+							//id_dokter = 0;
+
+							for (var i = 0; i < hasil.data.length; i++) {
+								var sekarang = new Date();
+								var tahunSekarang = sekarang.getFullYear
+
+								var pengalamanDokter = sekarang - hasil.data[i].start_date
+								console.log("endz" + pengalamanDokter)
+								str += "<div id='" + hasil.data[i].doctor_id + "' class='col-lg-6' nama-dokter='" + hasil.data[i].fullname + "' tindakan-dokter='" + + "'>";
+								str += "<div class='card'>"
+								str += "<div class='card cardMaster'><div class='card-body'>"
+								str += "<div class='row' style='margin-top: 0;'><div class='column' style='width: 75%;'>"
+								str += "<h4 class='card-text namaDokter'>" + hasil.data[i].fullname + "</h4>"
+								str += "<div class='pengalamanDokter'>"
+								str += "<a>" + hasil.data[i].name + "</a><br><a>" + hasil.data[i].start_date + " Tahun Pengalaman</a></div>";
+								str += "<div class='listRS' id='listRS" + hasil.data[i].doctor_id + "'>";
+								str += "</div>"
+								var doctorId = hasil.data[i].doctor_id
+								str += "<a id='btnLihat'><button id='btnLihat' value='" + hasil.data[i].doctor_id + "'onclick='detaildokter(" + doctorId + ")' class='btn btn-outline-primary btnDetail'>Lihat info lebih banyak</button></a></div>"
+								str += "<div class='column' style='width:125px'><img class='mr-3 class doctorImage' src='" + hasil.data[i].image_path + "' style='width: 125px; height: 125px;'>"
+								str += "<div align='center' class ='buttonChat' id='buttonChat" + hasil.data[i].doctor_id + "' style='margin-top: 20%;'><a class='offline btnChat' disabled>Offline</a></div>"
+								str += "<br>"
+								//tambah kondisi online mmfs rumah sakit
+								str += "<div align='center' id='buttonJanji'><button type='button' class='btn btn-primary btnJanji'>Buat Janji</button></div>"
+								str += "</div></div></div></div></div></div>"
+
+								arrid[i] = hasil.data[i].doctor_id;
+
+
+								id_dokter = hasil.data[i].doctor_id;
+
+							}
+							//	console.log("offset " + offset)
+							var doctorLength = hasil.data.length - 1
+							//var intDoctorLength = 
+							//var str = ' Menampilkan ' + searchResult.data[0].doctorId + '-' + searchResult.data[doctorLength].doctorId + ' dari ' + searchResult.total + ''
+							// Calculate the range of doctors displayed
+							var startIndex = (currentPage * size) + 1
+							var endIndex = Math.min((currentPage + 1) * size, hasil.total)
+
+							var sr = 'Menampilkan ' + startIndex + ' - ' + endIndex + ' dari ' + hasil.total
+							console.log("HASIL SR = " + sr)
+							console.log("doctor in this page : " + hasil.data)
+							console.log("doctor length in this page : " + doctorLength)
+							console.log("total pages = " + hasil.total_pages)
+							console.log("total data = " + hasil.total)
+							console.log("total data in this page = " + hasil.data.length)
+							//$("#pagination").html(str)
+							//tampil = "Menampilkan " + (offset + 1) + " - " + max + " dari " + maxShowData;
+							$('#btnTampilan').html(sr);
+							$("#listDokter").html(str);
+
+							for (var i = 0; i < online.length; i++) {
+								$("#buttonChat" + online[i]).html(str2);
+								console.log("test online" + online.length)
+							}
+							listRs(arrid);
+						}
+					}
+				});
+
+			}
+
+
+			$("#btnSearch").click(function () {
+				caridokterform();
+			});
+
+			function cari() {
+				window.open('cari-test', '_self')
+			}
+
+
+		</script>
+
+	</div>
+</body>
+
+</html>

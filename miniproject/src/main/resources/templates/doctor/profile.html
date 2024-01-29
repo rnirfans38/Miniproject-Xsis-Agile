@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html layout:decorate="~{fragments/layout}">
+
+<head>
+	<title>Doctor Profile</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+
+		<script>
+
+			$(function () {
+				getData()
+			})
+
+			function getData() {
+				$.ajax({
+					url: '/api/profile/doctor/2',
+					type: 'GET',
+					contentType: 'application/json',
+					success: function(data){
+						console.log(data)
+					}
+					
+				})
+
+			}
+
+			function openModal() {
+				var str = `
+                      <form id="formImg">
+                        
+                        <div class="mb-3">
+	                        <label for="formFile" class="form-label">Photo</label>
+	                        <input class="form-control" type="file" name="file" id="formFile" />
+                      	</div>
+                        
+                      </form>`
+				$(".modal-title").html("Edit Photo Profile")
+				$(".modal-body").html(str)
+				$("#btn-save").off("click").on("click", validation)
+				$("#modal").modal("show")
+
+			}
+			function validation() {
+				console.log("validationn")
+				$("#formImg").validate({
+					errorClass: "text-danger",
+					rules: {
+						file: {
+							required: true,
+							typeFile: "jpg|JPG|jpeg|JPEG|png|PNG"
+						}
+					},
+					messages: {
+						file: {
+							required: "Please provide an image!",
+							typeFile: "Please upload jpg/jpeg/png !"
+						}
+					}
+				})
+
+			}
+		</script>
+	</div>
+
+</body>
+
+</html>

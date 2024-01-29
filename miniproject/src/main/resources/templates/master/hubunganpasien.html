@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html layout:decorate="~{fragments/layout}">
+
+<head>
+	<title>Hubungan Pasien</title>
+</head>
+
+<body>
+	<h1>Hubungan Pasien</h1>
+	<div layout:fragment="content">
+		<!-- Striped Rows -->
+		<div class="card">
+			<div class="card-header">
+				<div class="card-title">
+					<h5>Hubungan Pasien</h5>
+				</div>
+
+				<div class="flex-grow-1 row mt-2">
+					<div class="col-12 col-md-4 col-sm-4 mb-sm-0 mb-2">
+						<div class="col-12">
+							<div class="input-group input-group-merge">
+								<span class="input-group-text" id="basic-addon-search31"><i
+										class="bx bx-search"></i></span>
+								<input id="searchCustomerRelationByName" type="text" class="form-control"
+									placeholder="Search by name..." aria-label="Search..."
+									aria-describedby="basic-addon-search31"
+									oninput="searchCustomerRelationByName(this.value)" />
+							</div>
+						</div>
+					</div>
+
+					<div class="col-4 col-md-3 col-sm-3 text-end">
+
+
+						<div class="col-12">
+							<select id="sortCustomerRelation" class="form-select form-select"
+								onchange="sortCustomerRelation(this.value)">
+								<option value="ASC">A-Z</option>
+								<option value="DESC">Z-A</option>
+							</select>
+						</div>
+
+
+					</div>
+
+					<div class="col-3 col-md-3 col-sm-3 text-end">
+
+
+						<div class="col-12">
+							<select id="dataSize" class="form-select form-select"
+								onchange="getAllCustomerRelation(0, this.value)">
+								<option value="5">5</option>
+								<option value="10">10</option>
+								<option value="15">15</option>
+							</select>
+						</div>
+
+
+					</div>
+					<div class="col-2 col-md-2 col-sm-3 text-end">
+
+
+						<div class="col-12">
+							<button type="button" class="btn btn-primary" data-bs-toggle="modal"
+								data-bs-target="#modalCenter" onclick="openModalAdd()">Tambah</button>
+						</div>
+
+
+					</div>
+					<!-- Modal Create & Edit -->
+
+					<div class="modal fade modalCustomerRelation" id="modalCenter" tabindex="-1" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered" role="document">
+
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="modalCenterTitle">Modal title</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									...
+
+								</div>
+								<!--<div class="modal-footer">
+									<button type="submit" id="btnCancel" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+										Close
+									</button>
+									<button type="submit" id="btnSave" class="btn btn-primary">Save changes</button>
+								</div>-->
+							</div>
+
+						</div>
+					</div>
+
+					<!-- End Modal -->
+
+					<!-- Modal Delete-->
+
+					<div class="modal fade modaldelete" id="modalCenter" tabindex="-1" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered" role="document">
+
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="modalCenterTitle">Modal title</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal"
+										aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									...
+
+								</div>
+								<div class="modal-footer">
+									<button type="submit" id="btnCancel" class="btn btn-outline-secondary"
+										data-bs-dismiss="modal">
+										Close
+									</button>
+									<button type="submit" id="btnSave" class="btn btn-primary">Save changes</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+					<!-- End Modal -->
+				</div>
+
+
+			</div>
+
+
+			<div class="card-body">
+				<div class="table-responsive text-nowrap">
+					<div id="isiData"></div>
+				</div>
+			</div>
+
+		</div>
+		<!--/ Striped Rows -->
+
+		<script>
+
+			$(function () {
+				getAllCustomerRelation(0, 5)
+			})
+
+			function getAllCustomerRelation(currentPage, size) {
+
+				var keyword = $("#searchCustomerRelationByName").val()
+				var sortType = "ASC"
+				$.ajax({
+					url: '/api/master/customerrelation/paging?currentPage=' + currentPage + '&size=' + size + '&keyword=' + keyword + '&sortType=' + sortType,
+					type: 'get',
+					contentType: 'application/json',
+					success: function (response) {
+						listView(response, size, keyword, sortType)
+					}
+				})
+			}
+
+			function listView(response, size, keyword, sortType) {
+
+				var str = '<div class="table-responsive text-nowrap">'
+				str += '<table id="myTable" class="table table-striped table-hover table-bordered">'
+				str += '<thead class="table-primary">'
+				str += '<tr>'
+				str += '<th class="text-center text-dark">Name</th>'
+				str += '<th class="text-center text-dark">Actions</th>'
+				str += '</tr>'
+				str += '</thead>'
+				str += '<tbody class="table-border-bottom-0">'
+				for (var i = 0; i < response.data.length; i++) {
+					str += '<tr>'
+					str += '<td class="text-center">' + response.data[i].name + '</td>'
+					str += '<td class="text-center">'
+					str += '<button title="Edit" type="button" class="btn p-0" value="' + response.data[i].id + '" onclick="f_edit(value)"><i class="bx bx-edit-alt me-1"></i></button>'
+					str += '<button title="Hapus" type="button" class="btn p-0" value="' + response.data[i].id + '" onclick="f_delete(value)"><i class="bx bx-trash me-1"></i></button>'
+					str += '</td>'
+					str += '</tr>'
+				}
+				str += '</tbody>'
+				str += '</table>'
+				str += '</div>'
+
+				str += ' <nav aria-label="Page navigation">'
+				str += '<span>Showing ' + ((response.data.length * response.pages) + 1) + ' to ' + response.data.length * (response.pages + 1) + ' of ' + response.total + ' entries</span>'
+				str += '<ul class="pagination justify-content-end">'
+				var prevMove = response.pages - 1 <= 0 ? 0 : response.pages - 1
+				str += '<li class="page-item prev">'
+				str += '<a class="page-link" onclick="getAllCustomerRelation(' + prevMove + ',' + size + ')" ><i class="tf-icon bx bx-chevrons-left"></i></a>'
+				str += '</li>'
+				for (var i = 0; i < response.total_pages; i++) {
+					var active = response.pages == i ? 'active' : ''
+					str += '<li class="page-item ' + active + '"><a class="page-link"  onclick="getAllCustomerRelation(' + i + ',' + size + ')">' + (i + 1) + '</a></li>'
+				}
+				var nextMove = response.pages + 1 > response.total_pages - 1 ? response.total_pages - 1 : response.pages + 1
+				str += ' <li class="page-item next">'
+				str += '<a class="page-link" onclick="getAllCustomerRelation(' + nextMove + ',' + size + ')"><i class="tf-icon bx bx-chevrons-right"></i></a>'
+				str += '</li>'
+				str += '</ul>'
+				str += '</nav>'
+
+				$('#isiData').empty();
+				$('#isiData').html(str);
+			}
+
+
+			function searchCustomerRelationByName(keyword) {
+				var currentPage = 0;
+				var size = $("#dataSize").val()
+				var sortType = $("#sortCustomerRelation").val()
+				$.ajax({
+					url: '/api/master/customerrelation/paging?currentPage=' + currentPage + '&size=' + size + '&keyword=' + keyword + '&sortType=' + sortType,
+					type: 'get',
+					contentType: 'application/json',
+					success: function (response) {
+						listView(response, size, keyword, sortType)
+					}
+				})
+			}
+
+			function sortCustomerRelation(sortType) {
+				var currentPage = 0;
+				var size = $("#dataSize").val()
+				var keyword = $("#searchCustomerRelationByName").val()
+				$.ajax({
+					url: '/api/master/customerrelation/paging?currentPage=' + currentPage + '&size=' + size + '&keyword=' + keyword + '&sortType=' + sortType,
+					type: 'get',
+					contentType: 'application/json',
+					success: function (response) {
+						listView(response, size, keyword, sortType)
+					}
+				})
+			}
+
+			function openModalAdd() {
+
+				var str = '<form id="form_add" action="/api/master/customerrelation/add" method="post">'
+				str += '<div>'
+				str += '<input type="hidden" name="id" id="id">'
+				str += '<label for="nameWithTitle" class="form-label">Nama</label >'
+				str += '<input type="text" name="name"  id="name" class="form-control" placeholder="Enter Name" required>'
+				str += '<span id="validate_name" class="text-danger"></span>'
+				str += '</div>'
+				str += '<div class="text-end mt-3">'
+				str += '<button type="button" id="btnCancel" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>'
+				str += '<button type="submit" id="btnSave" class="btn btn-primary ms-5">Save changes</button>'
+				str += '</div>'
+				str += '</form>'
+
+
+
+				$("#modalCenterTitle").html("Tambah")
+				$(".modal-body").html(str)
+				$("#btnCancel").html("Batal")
+				$("#btnSave").html("Simpan")
+				$("#btnSave").off('click').on("click", function () {
+					formValidation()
+				})
+				$(".modalCustomerRelation").modal('show')
+			}
+
+			function formValidation() {
+
+				$("#form_add").validate({
+					errorClass: "text-danger",
+					rules: {
+						name: {
+							required: true
+						}
+					},
+					messages: {
+						name: {
+							required: "Data Tidak Boleh Kosong"
+						}
+					},
+					submitHandler: function (form) {
+
+						var id = $("#id").val()
+						id = id == "" ? 0 : id
+						var name = $("#name").val()
+						$.ajax({
+							url: '/api/checknameisexist',
+							type: 'get',
+							data: {name: name, id: id},
+							dataType: 'json',
+							success: function (response) {
+
+								if (response) {
+									$("#validate_name").text("Name is already exist")
+									return true
+								} else {
+									saveCustomerRelation()
+									console.log("masuk")
+								}
+							}
+						})
+					}
+				})
+			}
+
+			function saveCustomerRelation() {
+
+				var formdata = '{'
+				formdata += '"name":"' + $("#name").val() + '"'
+				formdata += '}'
+
+				$.ajax({
+					url: '/api/master/customerrelation/add',
+					data: formdata,
+					type: 'post',
+					contentType: 'application/json',
+					success: function () {
+						$(".modalCustomerRelation").modal('toggle')
+						getAllCustomerRelation(0, 5)
+					}
+				})
+			}
+
+			function f_edit(id) {
+				$.ajax({
+					url: '/api/master/customerrelationbyid/' + id,
+					type: 'get',
+					contentType: 'aplication/json',
+					success: function (response) {
+						var str = '<form id="form_add" action="/api/master/customerrelation/add" method="post">'
+						str += '<div>'
+						str += '<input type="hidden" name="id" id="id" value="' + id + '">'
+						str += '<label for="nameWithTitle" class="form-label">Nama</label >'
+						str += '<input type="text" name="name"  id="name" class="form-control" placeholder="Enter Name" value="' + response.name + '" required>'
+						str += '<span id="validate_name" class="text-danger"></span>'
+						str += '</div>'
+						str += '<div mt-3">'
+						str += '<button type="button" id="btnCancel" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>'
+						str += '<button type="submit" id="btnSave" class="btn btn-primary mr-5">Save changes</button>'
+						str += '</div>'
+						str += '</form>'
+
+
+
+						$("#modalCenterTitle").html("Tambah")
+						$(".modal-body").html(str)
+						$("#btnCancel").html("Batal")
+						$("#btnSave").html("Simpan")
+						$("#btnSave").off('click').on("click", function () {
+							formValidationEdit()
+						})
+						$(".modalCustomerRelation").modal('show')
+					}
+				})
+			}
+
+			function formValidationEdit() {
+
+				$("#form_add").validate({
+					errorClass: "text-danger",
+					rules: {
+						name: {
+							required: true
+						}
+					},
+					messages: {
+						name: {
+							required: "Data Tidak Boleh Kosong"
+						}
+					},
+					submitHandler: function (form) {
+
+						var id = $("#id").val()
+						id = id == "" ? 0 : id
+						var name = $("#name").val()
+						$.ajax({
+							url: '/api/checknameisexist',
+							type: 'get',
+							data: {name: name, id: id},
+							dataType: 'json',
+							success: function (response) {
+
+								if (response) {
+									$("#validate_name").text("Name is already exist")
+									return true
+								} else {
+									updateCustomerRelation(id)
+								}
+							}
+						})
+					}
+				})
+			}
+
+			function updateCustomerRelation(id) {
+				var formdata = '{'
+				formdata += '"name":"' + $("#name").val() + '"'
+				formdata += '}'
+				$.ajax({
+					url: '/api/master/customerrelation/update/' + id,
+					data: formdata,
+					type: 'put',
+					contentType: 'application/json',
+					success: function () {
+						$(".modalCustomerRelation").modal('toggle')
+						getAllCustomerRelation(0, 5)
+					}
+				})
+			}
+
+			function f_delete(id) {
+				$.ajax({
+					url: '/api/master/customerrelationbyid/' + id,
+					type: 'get',
+					contentType: 'aplication/json',
+					success: function (response) {
+						var str = '<h5>Apakah Anda Yakin Ingin Menghapus ' + response.name + ' ?</h5>'
+
+						$(".modalCenterTitle").html("Hapus")
+						$(".modal-body").html(str)
+						$("#btnCancel").html("Batal")
+						$("#btnSave").html("Ya")
+						$("#btnSave").off('click').on("click", function () {
+							deleteCustomerRelation(id)
+						})
+						$(".modaldelete").modal('show')
+
+					}
+				})
+			}
+
+			function deleteCustomerRelation(id) {
+				$.ajax({
+					url: '/api/master/customerrelation/delete/' + id,
+					type: 'put',
+					contentType: 'application/json',
+					success: function () {
+						$(".modaldelete").modal('toggle')
+						getAllCustomerRelation(0, 5)
+
+					}
+				})
+			}
+
+
+		</script>
+
+	</div>
+</body>
+
+</html>
